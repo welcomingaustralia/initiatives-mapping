@@ -38,6 +38,7 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.3);
       width: min(320px, calc(100vw - 30px));
       box-sizing: border-box;
+      overflow: visible;
     }
 
     .searchBox input {
@@ -419,6 +420,7 @@ Promise.all([
 
   const orgDropdown = document.createElement("div");
   orgDropdown.className = "searchDropdown";
+  orgDropdown.style.zIndex = "100000";
   orgInput.parentNode.appendChild(orgDropdown);
 
   orgInput.addEventListener("input", () => {
@@ -497,6 +499,7 @@ Promise.all([
 
   const dropdown = document.createElement("div");
   dropdown.className = "searchDropdown";
+  dropdown.style.zIndex = "100001";
   input.parentNode.appendChild(dropdown);
 
   input.addEventListener("input", () => {
