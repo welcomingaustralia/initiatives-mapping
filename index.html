@@ -50,10 +50,12 @@
 
     #lgaSearchBox {
       top: 10px;
+      z-index: 30000;
     }
 
     #orgSearchBox {
       top: 62px;
+      z-index: 10000;
     }
 
     .searchDropdown {
@@ -527,7 +529,7 @@ Promise.all([
 
   const dropdown = document.createElement("div");
   dropdown.className = "searchDropdown";
-  dropdown.style.zIndex = "20001";
+  dropdown.style.zIndex = "50000";
   input.parentNode.appendChild(dropdown);
 
   input.addEventListener("input", () => {
