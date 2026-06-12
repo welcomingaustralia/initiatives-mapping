@@ -4,31 +4,15 @@
   <meta charset="utf-8" />
   <title>Welcoming Map – Working Copy</title>
 
-  <!-- Leaflet core -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- MarkerCluster -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-  />
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 
-  <!-- PapaParse -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
   <style>
@@ -108,7 +92,6 @@
 // -----------------------------------
 // 1. DATA SOURCES
 // -----------------------------------
-// Change these to your WORK repo if the files are copied there.
 const GEOJSON_URL =
   "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/LGA_2025_AUST_GDA2020.min.json";
 
@@ -135,7 +118,7 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 
 // -----------------------------------
-// 3. CLUSTER SETUP
+// 3. CLUSTERS AND LAYERS
 // -----------------------------------
 const clusterOptions = {
   spiderfyOnMaxZoom: true,
@@ -150,11 +133,8 @@ const clubCluster      = L.markerClusterGroup(clusterOptions);
 const copCluster       = L.markerClusterGroup(clusterOptions);
 const hubCluster       = L.markerClusterGroup(clusterOptions);
 
-// CRISP is now a proportional circle layer, not a marker cluster.
 const crispLayer = L.layerGroup();
 
-
-// Neutral grey cluster CSS
 document.head.insertAdjacentHTML("beforeend", `
 <style>
 .marker-cluster-small,
@@ -192,7 +172,24 @@ function normaliseName(str) {
   return (str || "").trim().toLowerCase();
 }
 
-// LGA storage
+function publicLGAName(name) {
+  if (name === "Unincorporated ACT") return "ACT";
+  if (name === "Unincorporated NT") return "NT";
+  return name;
+}
+
+function publicCountText(count) {
+  return count < 5 ? "Less than 5" : count;
+}
+
+function crispRadius(count) {
+  // Privacy: all counts under 5 use the same circle size.
+  if (count < 5) return 8;
+
+  // Square-root scaling keeps large values readable.
+  return Math.max(10, Math.sqrt(count) * 5);
+}
+
 const lgaLayers = {};
 const lgaCentres = {};
 
@@ -238,7 +235,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // LGA POLYGONS
+  // 6. LGA POLYGONS
   // -----------------------------------
   function lgaStyle(feature) {
     const name = feature.properties.LGA_NAME25;
@@ -265,23 +262,24 @@ Promise.all([
       const rawName = feature.properties.LGA_NAME25 || "";
       const key = normaliseName(rawName);
       const displayName = toTitleCase(rawName);
+      const publicName = publicLGAName(rawName);
 
-      lgaLayers[key] = { layer, displayName };
+      lgaLayers[key] = { layer, displayName: publicName };
 
       const centre = layer.getBounds().getCenter();
       lgaCentres[key] = {
         lat: centre.lat,
         lon: centre.lng,
-        displayName: displayName
+        displayName: publicName
       };
 
-      layer.bindTooltip(displayName);
+      layer.bindTooltip(publicName);
     }
   }).addTo(map);
 
 
   // -----------------------------------
-  // STANDARD POINT MARKERS
+  // 7. STANDARD POINT MARKERS
   // -----------------------------------
   const iconMap = {
     uni:       { icon: "fa-university", color: "#C44444" },
@@ -301,9 +299,11 @@ Promise.all([
 
     const cfg = iconMap[type] || { icon: "fa-map-marker", color: "#444" };
 
-    const jitter = (Math.random() - 0.5) * 0.0015;
-    const lat = +r.lat + jitter;
-    const lon = +r.lon + jitter;
+    const jitterLat = (Math.random() - 0.5) * 0.0015;
+    const jitterLon = (Math.random() - 0.5) * 0.0015;
+
+    const lat = +r.lat + jitterLat;
+    const lon = +r.lon + jitterLon;
 
     const marker = L.marker([lat, lon], {
       icon: L.divIcon({
@@ -336,41 +336,41 @@ Promise.all([
 
 
   // -----------------------------------
-  // CRISP PROPORTIONAL CIRCLES BY LGA
+  // 8. CRISP SETTLEMENTS — ONE CIRCLE PER LGA
   // -----------------------------------
   crispData.forEach(row => {
-    const lgaName = row.lga_name?.trim();
+    const rawLGAName = row.lga_name?.trim();
     const count = Number(row.count);
 
-    if (!lgaName || !count) return;
+    if (!rawLGAName || !count) return;
 
-    const key = normaliseName(lgaName);
+    const key = normaliseName(rawLGAName);
     const centre = lgaCentres[key];
 
     if (!centre) {
-      console.warn("CRISP LGA not found in GeoJSON:", lgaName);
+      console.warn("CRISP LGA not found in GeoJSON:", rawLGAName);
       return;
     }
 
-    // Square-root scaling keeps big values readable.
-    const radius = Math.max(5, Math.sqrt(count) * 5);
+    const displayCount = publicCountText(count);
+    const displayName = publicLGAName(centre.displayName);
 
     const circle = L.circleMarker([centre.lat, centre.lon], {
-      radius: radius,
-      color: "#5ca85c",
-      fillColor: "#5ca85c",
+      radius: crispRadius(count),
+      color: "#d81b60",
+      fillColor: "#d81b60",
       fillOpacity: 0.55,
       weight: 2
     });
 
-    circle.bindTooltip(`${centre.displayName}: ${count} people settled`, {
+    circle.bindTooltip(`${displayName}: ${displayCount} people settled`, {
       direction: "top",
       opacity: 0.9
     });
 
     circle.bindPopup(`
-      <b>${centre.displayName}</b><br>
-      ${count} people settled through CRISP
+      <b>${displayName}</b><br>
+      ${displayCount} people settled through CRISP
     `);
 
     crispLayer.addLayer(circle);
@@ -378,7 +378,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // ADD LAYERS TO MAP
+  // 9. ADD LAYERS TO MAP
   // -----------------------------------
   uniCluster.addTo(map);
   workplaceCluster.addTo(map);
@@ -389,7 +389,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // JITTER ON ZOOM FOR STANDARD MARKERS
+  // 10. JITTER ON ZOOM FOR STANDARD MARKERS ONLY
   // -----------------------------------
   function applyJitterToMarkers(clusterGroup) {
     clusterGroup.eachLayer(marker => {
@@ -421,7 +421,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // ORGANISATION SEARCH BAR
+  // 11. ORGANISATION SEARCH
   // -----------------------------------
   const orgInput = document.getElementById("orgSearch");
   const allMarkers = [];
@@ -483,7 +483,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // LAYER CONTROL
+  // 12. LAYER CONTROL
   // -----------------------------------
   L.control.layers(
     null,
@@ -493,14 +493,14 @@ Promise.all([
       "Welcoming Clubs": clubCluster,
       "Community Organisations": copCluster,
       "Community Hubs": hubCluster,
-      "CRISP settlement": crispLayer
+      "CRISP settlements": crispLayer
     },
     { collapsed: false }
   ).addTo(map);
 
 
   // -----------------------------------
-  // LEGEND
+  // 13. LEGEND
   // -----------------------------------
   const legend = L.control({ position: "bottomright" });
 
@@ -521,8 +521,8 @@ Promise.all([
         Community Organisations<br>
       <i class="fa fa-home" style="color:#0077cc; margin-right:6px;"></i>
         Community Hubs<br>
-      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#5ca85c; opacity:0.65; margin-right:6px;"></span>
-        CRISP settlement<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#d81b60; opacity:0.65; margin-right:6px;"></span>
+        CRISP settlements<br>
     `;
     return div;
   };
@@ -531,7 +531,7 @@ Promise.all([
 
 
   // -----------------------------------
-  // LGA SEARCH BAR
+  // 14. LGA SEARCH
   // -----------------------------------
   const input = document.getElementById("lgaSearch");
 
@@ -580,7 +580,6 @@ Promise.all([
 .catch(error => {
   console.error("Map data failed to load:", error);
 });
-
 </script>
 
 </body>
