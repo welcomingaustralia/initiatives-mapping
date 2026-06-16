@@ -288,7 +288,7 @@ Promise.all([
     const isPalm = palmAllianceLGAs.has(name);
 
     let style = isWelcoming
-      ? { fillColor: "#8AA642", color: "#8AA642", weight: 1, fillOpacity: 0.50 }
+      ? { fillColor: "#CCA234", color: "#CCA234", weight: 1, fillOpacity: 0.50 }
       : { fillColor: "#f2f2f2", color: "#999", weight: 0.3, fillOpacity: 0.1 };
 
     if (isPalm) {
@@ -529,7 +529,7 @@ Promise.all([
   legend.onAdd = function () {
     const div = L.DomUtil.create("div", "legend");
     div.innerHTML = `
-      <i style="background:#8AA642; width:14px; height:14px; display:inline-block; border:1px solid #8AA642; margin-right:6px;"></i>
+      <i style="background:#CCA234; width:14px; height:14px; display:inline-block; border:1px solid #CCA234; margin-right:6px;"></i>
         Welcoming Cities<br>
       <i style="border:2px dashed #e67373; width:14px; height:14px; display:inline-block; margin-right:6px;"></i>
         PALM Mayoral Alliance<br>
