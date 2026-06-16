@@ -314,12 +314,12 @@ Promise.all([
     }
   }).addTo(map);
 
-  const iconMap = {
-    uni:       { icon: "fa-university", color: "#C44444" },
-    workplace: { icon: "fa-building",   color: "#2E8B57" },
-    club:      { icon: "fa-flag",       color: "#800080" },
-    cop:       { icon: "fa-users",      color: "#ff8800" },
-    hub:       { icon: "fa-home",       color: "#0077cc" }
+  const circleColorMap = {
+    uni: "#C44444",
+    workplace: "#2E8B57",
+    club: "#800080",
+    cop: "#ff8800",
+    hub: "#0077cc"
   };
 
   points.forEach(r => {
@@ -328,17 +328,17 @@ Promise.all([
     const type = r.type?.trim().toLowerCase();
     if (type === "crisp") return;
 
-    const cfg = iconMap[type] || { icon: "fa-map-marker", color: "#444" };
+    const markerColor = circleColorMap[type] || "#444";
 
     const jitterLat = (Math.random() - 0.5) * 0.0015;
     const jitterLon = (Math.random() - 0.5) * 0.0015;
 
-    const marker = L.marker([+r.lat + jitterLat, +r.lon + jitterLon], {
-      icon: L.divIcon({
-        className: "fa-icon",
-        html: `<i class="fa ${cfg.icon}" style="color:${cfg.color}; font-size:20px;"></i>`,
-        iconSize: [20, 20]
-      }),
+    const marker = L.circleMarker([+r.lat + jitterLat, +r.lon + jitterLon], {
+      radius: 7,
+      color: markerColor,
+      fillColor: markerColor,
+      fillOpacity: 0.75,
+      weight: 2,
       title: r.name,
       postcode: r.postcode
     });
@@ -507,16 +507,16 @@ Promise.all([
         Welcoming Cities<br>
       <i style="border:2px dashed #e67373; width:14px; height:14px; display:inline-block; margin-right:6px;"></i>
         PALM Mayoral Alliance<br>
-      <i class="fa fa-university" style="color:#C44444; margin-right:6px;"></i>
-        Welcoming Universities<br>
-      <i class="fa fa-building" style="color:#2E8B57; margin-right:6px;"></i>
-        Welcoming Workplaces<br>
-      <i class="fa fa-flag" style="color:#800080; margin-right:6px;"></i>
-        Welcoming Clubs<br>
-      <i class="fa fa-users" style="color:#ff8800; margin-right:6px;"></i>
-        Community Organisations<br>
-      <i class="fa fa-home" style="color:#0077cc; margin-right:6px;"></i>
-        Community Hubs<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#C44444; opacity:0.75; margin-right:6px;"></span>
+  Welcoming Universities<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#2E8B57; opacity:0.75; margin-right:6px;"></span>
+  Welcoming Workplaces<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#800080; opacity:0.75; margin-right:6px;"></span>
+  Welcoming Clubs<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#ff8800; opacity:0.75; margin-right:6px;"></span>
+  Community Organisations<br>
+      <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#0077cc; opacity:0.75; margin-right:6px;"></span>
+  Community Hubs<br>
       <span style="display:inline-block; width:14px; height:14px; border-radius:50%; background:#d98ca3; opacity:0.75; margin-right:6px;"></span>
         CRISP Settlements<br>
     `;
