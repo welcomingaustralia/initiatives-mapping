@@ -316,6 +316,28 @@ Promise.all([
     layer.bringToFront();
   }
 
+  function showLGAPopup(rawName, layer) {
+    const profile = lgaSummaryLookup[normaliseName(rawName)];
+
+    if (!profile) return;
+
+    const popupContent = `
+      <div style="min-width:220px;">
+        <h3 style="margin:0 0 8px 0;">${rawName}</h3>
+
+        <p style="margin:6px 0;">
+          <strong>Born overseas:</strong> ${profile.overseas_born_pct}%
+        </p>
+
+        <p style="margin:6px 0;">
+          <strong>Language other than English:</strong> ${profile.language_other_than_english_pct}%
+        </p>
+      </div>
+    `;
+
+    layer.bindPopup(popupContent).openPopup();
+  }
+
   L.geoJSON(geojson, {
     style: lgaStyle,
     onEachFeature: (feature, layer) => {
@@ -336,6 +358,7 @@ Promise.all([
 
       layer.on("click", () => {
         highlightLGA(layer);
+        showLGAPopup(rawName, layer);
       });
     }
   }).addTo(map);
@@ -579,6 +602,7 @@ Promise.all([
         dropdown.style.display = "none";
         map.fitBounds(info.layer.getBounds(), { maxZoom: 10 });
         highlightLGA(info.layer);
+        showLGAPopup(info.displayName, info.layer);
       };
 
       dropdown.appendChild(item);
