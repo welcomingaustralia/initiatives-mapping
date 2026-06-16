@@ -243,6 +243,8 @@ function crispRadius(count) {
 
 const lgaLayers = {};
 const lgaCentres = {};
+let selectedLGALayer = null;
+  
 
 Promise.all([
   loadCSV(WELC_LGAS_URL),
@@ -294,6 +296,22 @@ Promise.all([
     return style;
   }
 
+  function highlightLGA(layer) {
+    if (selectedLGALayer) {
+      selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+    }
+
+    selectedLGALayer = layer;
+
+    layer.setStyle({
+      color: "#000000",
+      weight: 4,
+      fillOpacity: 0.65
+    });
+
+    layer.bringToFront();
+  }
+
   L.geoJSON(geojson, {
     style: lgaStyle,
     onEachFeature: (feature, layer) => {
@@ -311,6 +329,10 @@ Promise.all([
       };
 
       layer.bindTooltip(displayName);
+
+      layer.on("click", () => {
+        highlightLGA(layer);
+      });
     }
   }).addTo(map);
 
@@ -552,6 +574,7 @@ Promise.all([
         input.value = info.displayName;
         dropdown.style.display = "none";
         map.fitBounds(info.layer.getBounds(), { maxZoom: 10 });
+        highlightLGA(info.layer);
       };
 
       dropdown.appendChild(item);
