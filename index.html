@@ -247,6 +247,7 @@ function crispRadius(count) {
 const lgaLayers = {};
 const lgaCentres = {};
 let selectedLGALayer = null;
+const lgaSummaryLookup = {};
   
 
 Promise.all([
@@ -281,6 +282,14 @@ Promise.all([
     "Sunshine Coast",
     "Central Coast (Tas.)"
   ]);
+
+  lgaSummaryData.forEach(row => {
+    const key = normaliseName(row.lga_name);
+
+    if (!key) return;
+
+    lgaSummaryLookup[key] = row;
+  });
 
   function lgaStyle(feature) {
     const name = feature.properties.LGA_NAME25;
