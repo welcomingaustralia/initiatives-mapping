@@ -332,6 +332,9 @@ Promise.all([
 
     if (!profile) return;
 
+    const isWelcoming = welcomingLGAs.has(rawName);
+    const isPalm = palmAllianceLGAs.has(rawName);
+
     const counts = initiativeCountsByLGA[key] || {
       uni: new Set(),
       workplace: new Set(),
@@ -340,9 +343,32 @@ Promise.all([
       hub: new Set()
     };
 
+    const initiativeRows = [
+      ["Welcoming Universities", counts.uni.size],
+      ["Welcoming Workplaces", counts.workplace.size],
+      ["Welcoming Clubs", counts.club.size],
+      ["Community Organisations", counts.cop.size],
+      ["Community Hubs", counts.hub.size]
+    ].filter(row => row[1] > 0);
+
+    const initiativeText = initiativeRows.length
+      ? `
+        <hr>
+        <p style="margin:8px 0 4px 0;"><strong>Initiatives</strong></p>
+        ${initiativeRows.map(row => `
+          <p style="margin:4px 0;">${row[0]}: ${row[1]}</p>
+        `).join("")}
+      `
+      : "";
+
     const accreditedOrgs = accreditedOrgsByLGA[key]
       ? Array.from(accreditedOrgsByLGA[key].values())
       : [];
+
+    const membershipText = `
+      <p style="margin:6px 0;"><strong>Welcoming Cities Network:</strong> ${isWelcoming ? "Yes" : "No"}</p>
+      <p style="margin:6px 0;"><strong>PALM Mayoral Alliance:</strong> ${isPalm ? "Yes" : "No"}</p>
+    `;
 
     const accreditationText = profile.lga_accreditation?.trim()
       ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.lga_accreditation}</p>`
@@ -364,16 +390,10 @@ Promise.all([
       <div style="min-width:240px;">
         <h3 style="margin:0 0 8px 0;">${rawName}</h3>
 
+        ${membershipText}
         ${accreditationText}
 
-        <hr>
-
-        <p style="margin:8px 0 4px 0;"><strong>Initiatives</strong></p>
-        <p style="margin:4px 0;">Welcoming Universities: ${counts.uni.size}</p>
-        <p style="margin:4px 0;">Welcoming Workplaces: ${counts.workplace.size}</p>
-        <p style="margin:4px 0;">Welcoming Clubs: ${counts.club.size}</p>
-        <p style="margin:4px 0;">Community Organisations: ${counts.cop.size}</p>
-        <p style="margin:4px 0;">Community Hubs: ${counts.hub.size}</p>
+        ${initiativeText}
 
         ${accreditedOrgText}
 
