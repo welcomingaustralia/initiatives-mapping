@@ -327,21 +327,61 @@ Promise.all([
   }
 
   function showLGAPopup(rawName, layer) {
-    const profile = lgaSummaryLookup[normaliseName(rawName)];
+    const key = normaliseName(rawName);
+    const profile = lgaSummaryLookup[key];
 
     if (!profile) return;
 
+    const counts = initiativeCountsByLGA[key] || {
+      uni: new Set(),
+      workplace: new Set(),
+      club: new Set(),
+      cop: new Set(),
+      hub: new Set()
+    };
+
+    const accreditedOrgs = accreditedOrgsByLGA[key]
+      ? Array.from(accreditedOrgsByLGA[key].values())
+      : [];
+
+    const accreditationText = profile.lga_accreditation?.trim()
+      ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.lga_accreditation}</p>`
+      : "";
+
+    const accreditedOrgText = accreditedOrgs.length
+      ? `
+        <hr>
+        <p style="margin:8px 0 4px 0;"><strong>Accredited Organisations</strong></p>
+        <ul style="margin:4px 0 0 18px; padding:0;">
+          ${accreditedOrgs.map(org => `
+            <li>${org.name} (${org.level})</li>
+          `).join("")}
+        </ul>
+      `
+      : "";
+
     const popupContent = `
-      <div style="min-width:220px;">
+      <div style="min-width:240px;">
         <h3 style="margin:0 0 8px 0;">${rawName}</h3>
 
-        <p style="margin:6px 0;">
-          <strong>Born overseas:</strong> ${profile.overseas_born_pct}%
-        </p>
+        ${accreditationText}
 
-        <p style="margin:6px 0;">
-          <strong>Language other than English:</strong> ${profile.language_other_than_english_pct}%
-        </p>
+        <hr>
+
+        <p style="margin:8px 0 4px 0;"><strong>Initiatives</strong></p>
+        <p style="margin:4px 0;">Welcoming Universities: ${counts.uni.size}</p>
+        <p style="margin:4px 0;">Welcoming Workplaces: ${counts.workplace.size}</p>
+        <p style="margin:4px 0;">Welcoming Clubs: ${counts.club.size}</p>
+        <p style="margin:4px 0;">Community Organisations: ${counts.cop.size}</p>
+        <p style="margin:4px 0;">Community Hubs: ${counts.hub.size}</p>
+
+        ${accreditedOrgText}
+
+        <hr>
+
+        <p style="margin:8px 0 4px 0;"><strong>Community Profile</strong></p>
+        <p style="margin:4px 0;"><strong>Born overseas:</strong> ${profile.overseas_born_pct}%</p>
+        <p style="margin:4px 0;"><strong>Language other than English:</strong> ${profile.language_other_than_english_pct}%</p>
       </div>
     `;
 
