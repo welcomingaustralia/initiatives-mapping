@@ -365,10 +365,21 @@ Promise.all([
       ? Array.from(accreditedOrgsByLGA[key].values())
       : [];
 
-    const membershipText = `
-      <p style="margin:6px 0;"><strong>Welcoming Cities Network:</strong> ${isWelcoming ? "Yes" : "No"}</p>
-      <p style="margin:6px 0;"><strong>PALM Mayoral Alliance:</strong> ${isPalm ? "Yes" : "No"}</p>
-    `;
+    const membershipItems = [];
+
+    if (isWelcoming) {
+      membershipItems.push(
+        `<p style="margin:6px 0;"><strong>Welcoming Cities Network Member</strong></p>`
+      );
+    }
+
+    if (isPalm) {
+      membershipItems.push(
+        `<p style="margin:6px 0;"><strong>PALM Mayoral Alliance Member</strong></p>`
+      );
+    }
+
+    const membershipText = membershipItems.join("");
 
     const accreditationText = profile.lga_accreditation?.trim()
       ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.lga_accreditation}</p>`
