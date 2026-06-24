@@ -248,7 +248,8 @@ const lgaLayers = {};
 const lgaCentres = {};
 let selectedLGALayer = null;
 const lgaSummaryLookup = {};
-  
+const initiativeCountsByLGA = {};
+const accreditedOrgsByLGA = {};
 
 Promise.all([
   loadCSV(WELC_LGAS_URL),
@@ -385,6 +386,37 @@ Promise.all([
 
     const type = r.type?.trim().toLowerCase();
     if (type === "crisp") return;
+
+    const lgaKey = normaliseName(r.lga_name);
+    const institutionId = r.institution_id?.trim();
+    const accreditationLevel = r.accreditation_level?.trim();
+
+    if (lgaKey && institutionId) {
+      if (!initiativeCountsByLGA[lgaKey]) {
+        initiativeCountsByLGA[lgaKey] = {
+          uni: new Set(),
+          workplace: new Set(),
+          club: new Set(),
+          cop: new Set(),
+          hub: new Set()
+        };
+      }
+
+      if (initiativeCountsByLGA[lgaKey][type]) {
+      initiativeCountsByLGA[lgaKey][type].add(institutionId);
+      }
+
+      if (accreditationLevel) {
+        if (!accreditedOrgsByLGA[lgaKey]) {
+          accreditedOrgsByLGA[lgaKey] = new Map();
+        }
+
+        accreditedOrgsByLGA[lgaKey].set(institutionId, {
+          name: r.name,
+          level: accreditationLevel
+        });
+      }
+    }
 
     const markerColor = circleColorMap[type] || "#444";
 
