@@ -20,6 +20,14 @@
       height: 100%;
       margin: 0;
       padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    .leaflet-control,
+    .leaflet-popup-content {
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     #map {
@@ -847,6 +855,82 @@ Promise.all([
     dropdown.style.display = matches.length ? "block" : "none";
   });
 
+  const mobileLgaInput = document.getElementById("mobileLgaSearch");
+const mobileLgaDropdown = document.getElementById("mobileLgaDropdown");
+
+mobileLgaInput.addEventListener("input", () => {
+  const q = mobileLgaInput.value.toLowerCase().trim();
+  mobileLgaDropdown.innerHTML = "";
+
+  if (q.length < 2) {
+    mobileLgaDropdown.style.display = "none";
+    return;
+  }
+
+  const matches = Object.keys(lgaLayers).filter(name => name.includes(q));
+
+  matches.forEach(nameKey => {
+    const info = lgaLayers[nameKey];
+    const item = document.createElement("div");
+    item.innerText = info.displayName;
+
+    item.onclick = () => {
+      mobileLgaInput.value = info.displayName;
+      mobileLgaDropdown.style.display = "none";
+      mobileMenuPanel.classList.remove("open");
+
+      const centre = info.layer.getBounds().getCenter();
+      map.setView(centre, 8);
+
+      highlightLGA(info.layer);
+      showLGAPopup(info.displayName, info.layer);
+    };
+
+    mobileLgaDropdown.appendChild(item);
+  });
+
+  mobileLgaDropdown.style.display = matches.length ? "block" : "none";
+});
+
+
+const mobileOrgInput = document.getElementById("mobileOrgSearch");
+const mobileOrgDropdown = document.getElementById("mobileOrgDropdown");
+
+mobileOrgInput.addEventListener("input", () => {
+  const q = mobileOrgInput.value.toLowerCase().trim();
+  mobileOrgDropdown.innerHTML = "";
+
+  if (q.length < 2) {
+    mobileOrgDropdown.style.display = "none";
+    return;
+  }
+
+  const matches = allMarkers.filter(marker => {
+    const name = marker.options.title?.toLowerCase() || "";
+    const pc = marker.options.postcode?.toString() || "";
+    return name.includes(q) || pc.includes(q);
+  });
+
+  matches.forEach(marker => {
+    const item = document.createElement("div");
+    item.innerText = `${marker.options.title} (${marker.options.postcode || ""})`;
+
+    item.onclick = () => {
+      mobileOrgInput.value = marker.options.title;
+      mobileOrgDropdown.style.display = "none";
+      mobileMenuPanel.classList.remove("open");
+
+      map.setView(marker.getLatLng(), 12);
+      marker.openPopup();
+    };
+
+    mobileOrgDropdown.appendChild(item);
+  });
+
+  mobileOrgDropdown.style.display = matches.length ? "block" : "none";
+});
+
+  
 })
 .catch(error => {
   console.error("Map data failed to load:", error);
