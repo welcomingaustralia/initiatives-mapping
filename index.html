@@ -228,13 +228,23 @@
       }
       
       .leaflet-popup-content {
-        font-size: 17px;
-        line-height: 1.5;
-        min-width: 260px;
+        font-size: 14px;
+        line-height: 1.35;
+        min-width: 210px;
+        max-width: 260px;
       }
-    
+      
       .leaflet-popup-content h3 {
-        font-size: 21px;
+        font-size: 17px;
+        margin-bottom: 6px;
+      }
+      
+      .leaflet-popup-content p {
+        margin: 3px 0 !important;
+      }
+      
+      .leaflet-popup-content ul {
+        margin-top: 3px !important;
       }
     }
   </style>
@@ -298,7 +308,8 @@ const CRISP_LGA_URL =
 const LGA_SUMMARY_URL =
   "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/lga_summary.csv";
 
-const map = L.map("map").setView([-25.0, 134.0], 5);
+const initialZoom = window.innerWidth <= 600 ? 3 : 5;
+const map = L.map("map").setView([-25.0, 134.0], initialZoom);
 map.zoomControl.setPosition("bottomleft");
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -812,6 +823,29 @@ Promise.all([
   
   mobileMenuClose.addEventListener("click", () => {
     mobileMenuPanel.classList.remove("open");
+  });
+
+  const mobileLayerMap = {
+    uni: uniCluster,
+    workplace: workplaceCluster,
+    club: clubCluster,
+    cop: copCluster,
+    hub: hubCluster,
+    crisp: crispLayer
+  };
+  
+  document.querySelectorAll(".mobileLayerToggle").forEach(toggle => {
+    toggle.addEventListener("change", () => {
+      const layer = mobileLayerMap[toggle.dataset.layer];
+  
+      if (!layer) return;
+  
+      if (toggle.checked) {
+        map.addLayer(layer);
+      } else {
+        map.removeLayer(layer);
+      }
+    });
   });
 
   const input = document.getElementById("lgaSearch");
