@@ -806,46 +806,91 @@ Promise.all([
     mobileMenuPanel.classList.remove("open");
   });
 
-  const input = document.getElementById("lgaSearch");
+  const mobileLayerMap = {
+    uni: uniCluster,
+    workplace: workplaceCluster,
+    club: clubCluster,
+    cop: copCluster,
+    hub: hubCluster,
+    crisp: crispLayer
+  };
 
-  const dropdown = document.createElement("div");
-  dropdown.className = "searchDropdown";
-  dropdown.style.zIndex = "50000";
-  input.parentNode.appendChild(dropdown);
-
-  input.addEventListener("input", () => {
-    const q = input.value.toLowerCase().trim();
-    dropdown.innerHTML = "";
-
-    if (q.length < 2) {
-      dropdown.style.display = "none";
-      return;
-    }
-
-    const matches = Object.keys(lgaLayers).filter(name => name.includes(q));
-
-    matches.forEach(nameKey => {
-      const info = lgaLayers[nameKey];
-      const item = document.createElement("div");
-      item.innerText = info.displayName;
-
-      item.onclick = () => {
-        input.value = info.displayName;
-        dropdown.style.display = "none";
-        map.fitBounds(info.layer.getBounds(), {
-          maxZoom: 9,
-          paddingTopLeft: [20, 150],
-          paddingBottomRight: [20, 80]
-        });
-        highlightLGA(info.layer);
-        showLGAPopup(info.displayName, info.layer);
-      };
-
-      dropdown.appendChild(item);
+  document.querySelectorAll(".mobileLayerToggle").forEach(toggle => {
+    toggle.addEventListener("change", () => {
+      const layerName = toggle.dataset.layer;
+      const layer = mobileLayerMap[layerName];
+  
+      if (!layer) return;
+  
+      if (toggle.checked) {
+        map.addLayer(layer);
+      } else {
+        map.removeLayer(layer);
+      }
     });
-
-    dropdown.style.display = matches.length ? "block" : "none";
   });
+
+  
+
+  
+  function setupLGASearch(inputElement, dropdownElement, isMobile) {
+    inputElement.addEventListener("input", () => {
+      const q = inputElement.value.toLowerCase().trim();
+      dropdownElement.innerHTML = "";
+  
+      if (q.length < 2) {
+        dropdownElement.style.display = "none";
+        return;
+      }
+  
+      const matches = Object.keys(lgaLayers).filter(name => name.includes(q));
+  
+      matches.forEach(nameKey => {
+        const info = lgaLayers[nameKey];
+        const item = document.createElement("div");
+        item.innerText = info.displayName;
+  
+        item.onclick = () => {
+          inputElement.value = info.displayName;
+          dropdownElement.style.display = "none";
+  
+          if (isMobile) {
+            mobileMenuPanel.classList.remove("open");
+            const centre = info.layer.getBounds().getCenter();
+            map.setView(centre, 8);
+          } else {
+            map.fitBounds(info.layer.getBounds(), {
+              maxZoom: 9,
+              paddingTopLeft: [20, 150],
+              paddingBottomRight: [20, 80]
+            });
+          }
+  
+          highlightLGA(info.layer);
+          showLGAPopup(info.displayName, info.layer);
+        };
+  
+        dropdownElement.appendChild(item);
+      });
+  
+      dropdownElement.style.display = matches.length ? "block" : "none";
+    });
+  }
+  
+  const desktopLgaInput = document.getElementById("lgaSearch");
+  
+  const desktopLgaDropdown = document.createElement("div");
+  desktopLgaDropdown.className = "searchDropdown";
+  desktopLgaDropdown.style.zIndex = "50000";
+  desktopLgaInput.parentNode.appendChild(desktopLgaDropdown);
+  
+  setupLGASearch(desktopLgaInput, desktopLgaDropdown, false);
+  
+  setupLGASearch(
+    document.getElementById("mobileLgaSearch"),
+    document.getElementById("mobileLgaDropdown"),
+    true
+  );
 
 })
 .catch(error => {
