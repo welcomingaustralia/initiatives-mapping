@@ -108,48 +108,67 @@
       .searchBox {
         left: 8px;
         width: calc(100vw - 16px);
-        padding: 12px 14px;
-        font-size: 18px;
+        padding: 16px 18px;
+        font-size: 20px;
       }
 
       .searchBox input {
-        font-size: 18px;
+        font-size: 20px;
       }
-
+    
       #orgSearchBox {
-        top: 72px;
+        top: 86px;
       }
-
+    
       .searchDropdown {
-        top: 52px;
-        max-height: 320px;
+        top: 58px;
+        max-height: 340px;
       }
-
+    
       .searchDropdown div {
-        padding: 14px;
-        font-size: 18px;
+        padding: 16px;
+        font-size: 20px;
       }
-
+    
       .leaflet-control-layers {
-        font-size: 17px;
-        padding: 8px;
-        max-width: 90vw;
+        font-size: 20px;
+        padding: 14px;
+        line-height: 1.7;
+        max-width: 92vw;
       }
-
+    
       .leaflet-control-layers label {
-        padding: 6px 0;
+        padding: 10px 0;
         display: block;
       }
-
+    
       .leaflet-control-layers input {
-        transform: scale(1.4);
-        margin-right: 8px;
+        transform: scale(1.8);
+        margin-right: 14px;
       }
-
+    
       .legend {
-        font-size: 15px;
-        padding: 12px;
-        max-width: 260px;
+        font-size: 18px;
+        padding: 16px;
+        max-width: 310px;
+        line-height: 1.6;
+      }
+    
+      .legend span,
+      .legend i {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px;
+      }
+    
+      .leaflet-popup-content {
+        font-size: 17px;
+        line-height: 1.5;
+        min-width: 260px;
+      }
+    
+      .leaflet-popup-content h3 {
+        font-size: 21px;
       }
     }
   </style>
@@ -713,7 +732,11 @@ Promise.all([
       item.onclick = () => {
         input.value = info.displayName;
         dropdown.style.display = "none";
-        map.fitBounds(info.layer.getBounds(), { maxZoom: 10 });
+        map.fitBounds(info.layer.getBounds(), {
+          maxZoom: 9,
+          paddingTopLeft: [20, 150],
+          paddingBottomRight: [20, 80]
+        });
         highlightLGA(info.layer);
         showLGAPopup(info.displayName, info.layer);
       };
