@@ -527,23 +527,16 @@ Promise.all([
   }
 
   function flashLGA(layer) {
-    let flashes = 0;
+    layer.setStyle({
+      color: "#ff7a00",
+      weight: 5,
+      fillColor: "#ff7a00",
+      fillOpacity: 0.75
+    });
   
-    const flashInterval = setInterval(() => {
-      layer.setStyle({
-        color: "#ff7a00",
-        weight: 4,
-        fillColor: "#ff7a00",
-        fillOpacity: flashes % 2 === 0 ? 0.85 : 0.35
-      });
-  
-      flashes++;
-  
-      if (flashes >= 4) {
-        clearInterval(flashInterval);
-        highlightLGA(layer);
-      }
-    }, 250);
+    setTimeout(() => {
+      highlightLGA(layer);
+    }, 900);
   }
 
   function showLGAPopup(rawName, layer) {
