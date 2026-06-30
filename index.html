@@ -429,8 +429,21 @@ function crispRadius(count) {
   return Math.max(10, Math.sqrt(count) * 5);
 }
 
+const stateCodeMap = {
+  "1": "NSW",
+  "2": "VIC",
+  "3": "QLD",
+  "4": "SA",
+  "5": "WA",
+  "6": "TAS",
+  "7": "NT",
+  "8": "ACT",
+  "9": "OT"
+};
+
 const lgaLayers = {};
 const lgaCentres = {};
+const stateBounds = {};
 let selectedLGALayer = null;
 const lgaSummaryLookup = {};
 const initiativeCountsByLGA = {};
@@ -611,6 +624,15 @@ Promise.all([
       const rawName = feature.properties.LGA_NAME25 || "";
       const key = normaliseName(rawName);
       const displayName = publicLGAName(rawName);
+      const state = stateCodeMap[feature.properties.STE_CODE21];
+
+      if (state) {
+        if (!stateBounds[state]) {
+          stateBounds[state] = layer.getBounds();
+        } else {
+          stateBounds[state].extend(layer.getBounds());
+        }
+      }
 
       lgaLayers[key] = { layer, displayName };
 
