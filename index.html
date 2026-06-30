@@ -57,24 +57,6 @@
       box-sizing: border-box;
     }
 
-    .lgaSearchRow {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    
-    .lgaSearchRow input {
-      flex: 1;
-    }
-
-#stateFilter {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 4px 6px;
-  font-size: 14px;
-  background: white;
-}
-
     #lgaSearchBox {
       top: 10px;
       z-index: 30000;
@@ -283,9 +265,8 @@
 
 <body>
 
-<div id="lgaSearchBox" class="searchBox lgaSearchRow">
-  <input id="lgaSearch" type="text" placeholder="Search council area...">
-
+<div id="stateFilterBox" class="filterBox">
+  <label for="stateFilter">State / Territory</label>
   <select id="stateFilter">
     <option value="ALL">All</option>
     <option value="ACT">ACT</option>
@@ -297,6 +278,10 @@
     <option value="VIC">VIC</option>
     <option value="WA">WA</option>
   </select>
+</div>
+  
+<div id="lgaSearchBox" class="searchBox lgaSearchRow">
+  <input id="lgaSearch" type="text" placeholder="Search council area...">
 </div>
 
 <div id="orgSearchBox" class="searchBox">
