@@ -57,6 +57,24 @@
       box-sizing: border-box;
     }
 
+    .lgaSearchRow {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .lgaSearchRow input {
+      flex: 1;
+    }
+
+#stateFilter {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 4px 6px;
+  font-size: 14px;
+  background: white;
+}
+
     #lgaSearchBox {
       top: 10px;
       z-index: 30000;
@@ -192,6 +210,17 @@
         border: 1px solid #bbb;
         border-radius: 6px;
       }
+
+      .mobileMenuSection select {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+        padding: 10px 12px;
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        background: white;
+        color: black;
+      }
     
       .mobileLayerToggle {
         transform: scale(1.3);
@@ -254,8 +283,20 @@
 
 <body>
 
-<div id="lgaSearchBox" class="searchBox">
+<div id="lgaSearchBox" class="searchBox lgaSearchRow">
   <input id="lgaSearch" type="text" placeholder="Search council area...">
+
+  <select id="stateFilter">
+    <option value="ALL">All</option>
+    <option value="ACT">ACT</option>
+    <option value="NSW">NSW</option>
+    <option value="NT">NT</option>
+    <option value="QLD">QLD</option>
+    <option value="SA">SA</option>
+    <option value="TAS">TAS</option>
+    <option value="VIC">VIC</option>
+    <option value="WA">WA</option>
+  </select>
 </div>
 
 <div id="orgSearchBox" class="searchBox">
@@ -267,6 +308,21 @@
 <div id="mobileMenuPanel">
   <button id="mobileMenuClose">×</button>
   <h3>Search & filters</h3>
+
+  <div class="mobileMenuSection">
+    <label for="mobileStateFilter">State / Territory</label>
+    <select id="mobileStateFilter">
+      <option value="ALL">All</option>
+      <option value="ACT">ACT</option>
+      <option value="NSW">NSW</option>
+      <option value="NT">NT</option>
+      <option value="QLD">QLD</option>
+      <option value="SA">SA</option>
+      <option value="TAS">TAS</option>
+      <option value="VIC">VIC</option>
+      <option value="WA">WA</option>
+    </select>
+  </div>
 
   <div class="mobileMenuSection">
     <label for="mobileLgaSearch">Council area</label>
