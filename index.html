@@ -709,7 +709,9 @@ Promise.all([
       fillOpacity: 0.75,
       weight: 2,
       title: r.name,
-      postcode: r.postcode
+      postcode: r.postcode,
+      state: (r.state || "").trim().toUpperCase(),
+      type: type
     });
 
     marker.bindTooltip(r.name, {
