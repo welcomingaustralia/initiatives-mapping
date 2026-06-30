@@ -931,6 +931,33 @@ Promise.all([
     });
   });
 
+  function applyStateFilter(selectedState) {
+    const groups = [uniCluster, workplaceCluster, clubCluster, copCluster, hubCluster];
+  
+    groups.forEach(group => {
+      group.eachLayer(marker => {
+        const markerState = marker.options.state;
+  
+        if (selectedState === "ALL" || markerState === selectedState) {
+          if (!group.hasLayer(marker)) {
+            group.addLayer(marker);
+          }
+        } else {
+          group.removeLayer(marker);
+        }
+      });
+    });
+  
+    if (selectedState === "ALL") {
+      map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
+    } else if (stateBounds[selectedState]) {
+      map.fitBounds(stateBounds[selectedState], {
+        padding: [20, 20],
+        maxZoom: 7
+      });
+    }
+  }
+
   const input = document.getElementById("lgaSearch");
 
   const dropdown = document.createElement("div");
