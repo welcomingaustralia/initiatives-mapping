@@ -652,6 +652,8 @@ Promise.all([
     }
   }).addTo(map);
 
+  const initiativeMarkers = [];
+
   const circleColorMap = {
     uni: "#00AFC7",
     workplace: "#FD4731",
@@ -733,6 +735,8 @@ Promise.all([
     if (type === "hub")       hubCluster.addLayer(marker);
   });
 
+  initiativeMarkers.push(marker);
+  
   crispData.forEach(row => {
     const rawLGAName = row.lga_name?.trim();
     const count = Number(row.count);
@@ -932,20 +936,28 @@ Promise.all([
   });
 
   function applyStateFilter(selectedState) {
-    const groups = [uniCluster, workplaceCluster, clubCluster, copCluster, hubCluster];
+    const groups = {
+      uni: uniCluster,
+      workplace: workplaceCluster,
+      club: clubCluster,
+      cop: copCluster,
+      hub: hubCluster
+    };
   
-    groups.forEach(group => {
-      group.eachLayer(marker => {
-        const markerState = marker.options.state;
+    Object.values(groups).forEach(group => {
+      group.clearLayers();
+    });
   
-        if (selectedState === "ALL" || markerState === selectedState) {
-          if (!group.hasLayer(marker)) {
-            group.addLayer(marker);
-          }
-        } else {
-          group.removeLayer(marker);
-        }
-      });
+    initiativeMarkers.forEach(marker => {
+      const markerState = marker.options.state;
+      const markerType = marker.options.type;
+      const group = groups[markerType];
+  
+      if (!group) return;
+  
+      if (selectedState === "ALL" || markerState === selectedState) {
+        group.addLayer(marker);
+      }
     });
   
     if (selectedState === "ALL") {
