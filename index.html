@@ -535,7 +535,12 @@ Promise.all([
     });
   
     setTimeout(() => {
-      highlightLGA(layer);
+      if (selectedLGALayer) {
+        selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+      }
+  
+      selectedLGALayer = layer;
+      layer.setStyle(lgaStyle(layer.feature));
     }, 900);
   }
 
