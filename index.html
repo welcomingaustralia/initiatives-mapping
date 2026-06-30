@@ -445,6 +445,7 @@ const lgaLayers = {};
 const lgaCentres = {};
 const stateBounds = {};
 let selectedLGALayer = null;
+let currentStateFilter = "ALL";
 const lgaSummaryLookup = {};
 const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
@@ -634,7 +635,7 @@ Promise.all([
         }
       }
 
-      lgaLayers[key] = { layer, displayName };
+      lgaLayers[key] = { layer, displayName, state };
 
       const centre = layer.getBounds().getCenter();
       lgaCentres[key] = {
@@ -842,7 +843,12 @@ Promise.all([
     const matches = allMarkers.filter(marker => {
       const name = marker.options.title?.toLowerCase() || "";
       const pc = marker.options.postcode?.toString() || "";
-      return name.includes(q) || pc.includes(q);
+      const markerState = marker.options.state;
+    
+      const matchesSearch = name.includes(q) || pc.includes(q);
+      const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
+    
+      return matchesSearch && matchesState;
     });
 
     matches.forEach(marker => {
@@ -938,6 +944,8 @@ Promise.all([
   });
 
   function applyStateFilter(selectedState) {
+    currentStateFilter = selectedState;
+    
     const groups = {
       uni: uniCluster,
       workplace: workplaceCluster,
@@ -1004,7 +1012,13 @@ Promise.all([
       return;
     }
 
-    const matches = Object.keys(lgaLayers).filter(name => name.includes(q));
+    const matches = Object.keys(lgaLayers).filter(name => {
+      const info = lgaLayers[name];
+      const matchesSearch = name.includes(q);
+      const matchesState = currentStateFilter === "ALL" || info.state === currentStateFilter;
+    
+      return matchesSearch && matchesState;
+    });
 
     matches.forEach(nameKey => {
       const info = lgaLayers[nameKey];
@@ -1041,7 +1055,13 @@ mobileLgaInput.addEventListener("input", () => {
     return;
   }
 
-  const matches = Object.keys(lgaLayers).filter(name => name.includes(q));
+  const matches = Object.keys(lgaLayers).filter(name => {
+    const info = lgaLayers[name];
+    const matchesSearch = name.includes(q);
+    const matchesState = currentStateFilter === "ALL" || info.state === currentStateFilter;
+  
+    return matchesSearch && matchesState;
+  });
 
   matches.forEach(nameKey => {
     const info = lgaLayers[nameKey];
@@ -1082,7 +1102,12 @@ mobileOrgInput.addEventListener("input", () => {
   const matches = allMarkers.filter(marker => {
     const name = marker.options.title?.toLowerCase() || "";
     const pc = marker.options.postcode?.toString() || "";
-    return name.includes(q) || pc.includes(q);
+    const markerState = marker.options.state;
+  
+    const matchesSearch = name.includes(q) || pc.includes(q);
+    const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
+  
+    return matchesSearch && matchesState;
   });
 
   matches.forEach(marker => {
