@@ -526,6 +526,25 @@ Promise.all([
     layer.bringToBack();
   }
 
+  function flashLGA(layer) {
+    let flashes = 0;
+  
+    const flashInterval = setInterval(() => {
+      layer.setStyle({
+        color: "#000000",
+        weight: 4,
+        fillOpacity: flashes % 2 === 0 ? 0.85 : 0.35
+      });
+  
+      flashes++;
+  
+      if (flashes >= 4) {
+        clearInterval(flashInterval);
+        highlightLGA(layer);
+      }
+    }, 250);
+  }
+
   function showLGAPopup(rawName, layer) {
     const key = normaliseName(rawName);
     const profile = lgaSummaryLookup[key];
@@ -1029,11 +1048,11 @@ Promise.all([
         input.value = info.displayName;
         dropdown.style.display = "none";
         map.fitBounds(info.layer.getBounds(), {
-          maxZoom: 9,
+          maxZoom: 11,
           paddingTopLeft: [20, 150],
           paddingBottomRight: [20, 80]
         });
-        highlightLGA(info.layer);
+        flashLGA(info.layer);
         showLGAPopup(info.displayName, info.layer);
       };
 
@@ -1074,9 +1093,9 @@ mobileLgaInput.addEventListener("input", () => {
       mobileMenuPanel.classList.remove("open");
 
       const centre = info.layer.getBounds().getCenter();
-      map.setView(centre, 8);
+      map.setView(centre, 10);
 
-      highlightLGA(info.layer);
+      flashLGA(info.layer);
       showLGAPopup(info.displayName, info.layer);
     };
 
