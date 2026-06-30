@@ -958,6 +958,22 @@ Promise.all([
     }
   }
 
+  const stateFilter = document.getElementById("stateFilter");
+  const mobileStateFilter = document.getElementById("mobileStateFilter");
+  
+  stateFilter.addEventListener("change", () => {
+    const selectedState = stateFilter.value;
+    mobileStateFilter.value = selectedState;
+    applyStateFilter(selectedState);
+  });
+  
+  mobileStateFilter.addEventListener("change", () => {
+    const selectedState = mobileStateFilter.value;
+    stateFilter.value = selectedState;
+    mobileMenuPanel.classList.remove("open");
+    applyStateFilter(selectedState);
+  });
+
   const input = document.getElementById("lgaSearch");
 
   const dropdown = document.createElement("div");
