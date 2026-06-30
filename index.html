@@ -734,9 +734,10 @@ Promise.all([
     if (type === "club")      clubCluster.addLayer(marker);
     if (type === "cop")       copCluster.addLayer(marker);
     if (type === "hub")       hubCluster.addLayer(marker);
+
+    initiativeMarkers.push(marker);
   });
 
-  initiativeMarkers.push(marker);
   
   crispData.forEach(row => {
     const rawLGAName = row.lga_name?.trim();
