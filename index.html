@@ -527,22 +527,29 @@ Promise.all([
   }
 
   function flashLGA(layer) {
+    if (selectedLGALayer && selectedLGALayer !== layer) {
+      selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+    }
+  
+    selectedLGALayer = layer;
+  
     layer.setStyle({
       color: "#ffffff",
       weight: 5,
       fillColor: "#ffffff",
-      fillOpacity: 0.75
+      fillOpacity: 0.65
     });
   
     setTimeout(() => {
-      if (selectedLGALayer) {
-        selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
-      }
+      layer.setStyle({
+        color: "#666666",
+        weight: 3,
+        fillOpacity: 0.65
+      });
   
-      selectedLGALayer = layer;
-      layer.setStyle(lgaStyle(layer.feature));
+      layer.bringToBack();
     }, 900);
-  }
+}
 
   function showLGAPopup(rawName, layer) {
     const key = normaliseName(rawName);
