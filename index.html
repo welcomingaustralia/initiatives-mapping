@@ -652,7 +652,6 @@ Promise.all([
     }
   }).addTo(map);
 
-  const initiativeMarkers = [];
 
   const circleColorMap = {
     uni: "#00AFC7",
@@ -661,6 +660,8 @@ Promise.all([
     cop: "#ff8800",
     hub: "#02006C"
   };
+
+  const initiativeMarkers = [];
 
   points.forEach(r => {
     if (!r.lat || !r.lon) return;
