@@ -172,34 +172,54 @@
       height: 0;
     }
     
-    .switchSlider {
-      justify-self: end;
-      width: 30px;
-      height: 16px;
-      background: #bdbdbd;
-      border-radius: 999px;
-      position: relative;
-      transition: background 0.2s ease;
+    .layerRow {
+      display: grid;
+      grid-template-columns: 14px 1fr 32px;
+      align-items: center;
+      column-gap: 8px;
+      min-height: 18px;
+      margin: 2px 0;
+      font-size: 13px;
     }
     
-    .switchSlider::before {
+    label.layerRow {
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .switchInput {
+      appearance: none;
+      -webkit-appearance: none;
+      justify-self: end;
+      width: 30px !important;
+      height: 16px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      border-radius: 999px;
+      background: #bdbdbd;
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .switchInput::before {
       content: "";
       position: absolute;
       width: 12px;
       height: 12px;
-      left: 2px;
       top: 2px;
+      left: 2px;
       background: white;
       border-radius: 50%;
-      transition: transform 0.2s ease;
       box-shadow: 0 1px 2px rgba(0,0,0,0.35);
+      transition: transform 0.2s ease;
     }
     
-    .switchInput:checked + .switchSlider {
+    .switchInput:checked {
       background: #2EAD4B;
     }
     
-    .switchInput:checked + .switchSlider::before {
+    .switchInput:checked::before {
       transform: translateX(14px);
     }
     
@@ -488,42 +508,36 @@
         <span class="legendDot uniDot"></span>
         <span class="layerName">Welcoming Universities</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="uni" checked>
-        <span class="switchSlider"></span>
       </label>
   
       <label class="layerRow">
         <span class="legendDot workplaceDot"></span>
         <span class="layerName">Welcoming Workplaces</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="workplace" checked>
-        <span class="switchSlider"></span>
       </label>
   
       <label class="layerRow">
         <span class="legendDot clubDot"></span>
         <span class="layerName">Welcoming Clubs</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="club" checked>
-        <span class="switchSlider"></span>
       </label>
   
       <label class="layerRow">
         <span class="legendDot copDot"></span>
         <span class="layerName">Community Organisations</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="cop" checked>
-        <span class="switchSlider"></span>
       </label>
   
       <label class="layerRow">
         <span class="legendDot hubDot"></span>
         <span class="layerName">Community Hubs</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="hub" checked>
-        <span class="switchSlider"></span>
       </label>
   
       <label class="layerRow">
         <span class="legendDot crispDot"></span>
         <span class="layerName">CRISP Settlements</span>
         <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="crisp" checked>
-        <span class="switchSlider"></span>
       </label>
     </div>
   </div>
