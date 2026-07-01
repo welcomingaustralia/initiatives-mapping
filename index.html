@@ -358,14 +358,8 @@ const GEOJSON_URL =
 const POINTS_URL =
   "https://raw.githubusercontent.com/welcomingaustralia/welcoming-map/main/welcoming_points_centroids.csv";
 
-const WELC_LGAS_URL =
-  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/welcoming_lgas.csv";
-
-const CRISP_LGA_URL =
-  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/crisp_lgas.csv";
-
-const LGA_SUMMARY_URL =
-  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/lga_summary.csv";
+const LGA_MASTER_URL =
+  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/lga_master.csv";
 
 const initialZoom = window.innerWidth <= 600 ? 3 : 5;
 const map = L.map("map").setView([-25.0, 134.0], initialZoom);
@@ -451,62 +445,37 @@ const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
 
 Promise.all([
-  loadCSV(WELC_LGAS_URL),
   fetch(GEOJSON_URL).then(r => r.json()),
   loadCSV(POINTS_URL),
-  loadCSV(CRISP_LGA_URL),
-  loadCSV(LGA_SUMMARY_URL)
+  loadCSV(LGA_MASTER_URL)
 ])
-.then(([welcList, geojson, points, crispData, lgaSummaryData]) => {
+.then(([geojson, points, lgaMasterData]) => {
 
-  const welcomingLGAs = new Set(
-    welcList.map(r => r.lga_name?.trim()).filter(Boolean)
-  );
-
-  const palmAllianceLGAs = new Set([
-    "Leeton",
-    "Wagga Wagga",
-    "Mount Isa",
-    "Mareeba Shire",
-    "Southern Downs",
-    "Hinchinbrook",
-    "Rockhampton",
-    "Lockyer Valley",
-    "Western Downs",
-    "Banana",
-    "South Burnett",
-    "Cassowary Coast",
-    "Greater Hume",
-    "Griffith",
-    "Berrigan",
-    "Sunshine Coast",
-    "Central Coast (Tas.)",
-    "Toowoomba"
-  ]);
-
-  lgaSummaryData.forEach(row => {
-    const key = normaliseName(row.lga_name);
-
-    if (!key) return;
-
-    lgaSummaryLookup[key] = row;
+  lgaMasterData.forEach(row => {
+    const code = (row.lga_code || "").trim();
+  
+    if (!code) return;
+  
+    lgaSummaryLookup[code] = row;
   });
 
   function lgaStyle(feature) {
-    const name = feature.properties.LGA_NAME25;
-    const isWelcoming = welcomingLGAs.has(name);
-    const isPalm = palmAllianceLGAs.has(name);
-
+    const code = feature.properties.LGA_CODE25;
+    const profile = lgaSummaryLookup[code];
+  
+    const isWelcoming = profile?.welcoming_city_member?.trim().toUpperCase() === "Y";
+    const isPalm = profile?.palm_alliance?.trim().toUpperCase() === "Y";
+  
     let style = isWelcoming
       ? { fillColor: "#CCA234", color: "#CCA234", weight: 1, fillOpacity: 0.50 }
       : { fillColor: "#f2f2f2", color: "#999", weight: 0.3, fillOpacity: 0.1 };
-
+  
     if (isPalm) {
       style.color = "#EC6C5B";
       style.weight = 3;
       style.dashArray = "4 4";
     }
-
+  
     return style;
   }
 
@@ -552,13 +521,14 @@ Promise.all([
 }
 
   function showLGAPopup(rawName, layer) {
+    const code = layer.feature.properties.LGA_CODE25;
     const key = normaliseName(rawName);
-    const profile = lgaSummaryLookup[key];
-
+    const profile = lgaSummaryLookup[code];
+  
     if (!profile) return;
-
-    const isWelcoming = welcomingLGAs.has(rawName);
-    const isPalm = palmAllianceLGAs.has(rawName);
+  
+    const isWelcoming = profile.welcoming_city_member?.trim().toUpperCase() === "Y";
+    const isPalm = profile.palm_alliance?.trim().toUpperCase() === "Y";
 
     const counts = initiativeCountsByLGA[key] || {
       uni: new Set(),
@@ -606,8 +576,8 @@ Promise.all([
 
     const membershipText = membershipItems.join("");
 
-    const accreditationText = profile.lga_accreditation?.trim()
-      ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.lga_accreditation}</p>`
+    const accreditationText = profile.welcoming_city_accreditation?.trim()
+      ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.welcoming_city_accreditation}</p>`
       : "";
 
     const accreditedOrgText = accreditedOrgs.length
@@ -663,7 +633,7 @@ Promise.all([
       lgaLayers[key] = { layer, displayName, state };
 
       const centre = layer.getBounds().getCenter();
-      lgaCentres[key] = {
+      lgaCentres[feature.properties.LGA_CODE25] = {
         lat: centre.lat,
         lon: centre.lng,
         displayName
@@ -765,23 +735,22 @@ Promise.all([
   });
 
   
-  crispData.forEach(row => {
-    const rawLGAName = row.lga_name?.trim();
-    const count = Number(row.count);
-
-    if (!rawLGAName || !count) return;
-
-    const key = normaliseName(rawLGAName);
-    const centre = lgaCentres[key];
-
+  lgaMasterData.forEach(row => {
+    const code = (row.lga_code || "").trim();
+    const count = Number(row.crisp_settled || 0);
+  
+    if (!code || !count) return;
+  
+    const centre = lgaCentres[code];
+  
     if (!centre) {
-      console.warn("CRISP LGA not found in GeoJSON:", rawLGAName);
+      console.warn("CRISP LGA not found in GeoJSON:", row.lga_name);
       return;
     }
-
+  
     const displayCount = publicCountText(count);
     const displayName = publicLGAName(centre.displayName);
-
+  
     const circle = L.circleMarker([centre.lat, centre.lon], {
       radius: crispRadius(count),
       color: "#d98ca3",
@@ -789,17 +758,17 @@ Promise.all([
       fillOpacity: 0.55,
       weight: 2
     });
-
+  
     circle.bindTooltip(`${displayName}: ${displayCount} people settled`, {
       direction: "top",
       opacity: 0.9
     });
-
+  
     circle.bindPopup(`
       <b>${displayName}</b><br>
       ${displayCount} people settled through CRISP
     `);
-
+  
     crispLayer.addLayer(circle);
   });
 
