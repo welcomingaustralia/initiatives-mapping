@@ -444,6 +444,41 @@ const lgaMasterLookup = {};
 const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
 
+let explorerState = {
+  selection: {
+    state: "ALL",
+    lga: null,
+    organisation: null
+  },
+  welcomingCities: {
+    members: 0,
+    accredited: 0
+  },
+  palmAlliance: {
+    members: 0
+  },
+  initiatives: {
+    universities: 0,
+    workplaces: 0,
+    clubs: 0,
+    communityOrganisations: 0,
+    communityHubs: 0,
+    total: 0
+  },
+  accreditation: {
+    established: 0,
+    advanced: 0,
+    excelling: 0,
+    total: 0
+  },
+  crisp: {
+    lgas: 0,
+    peopleSettled: 0
+  },
+  organisations: []
+};
+
+
 Promise.all([
   fetch(GEOJSON_URL).then(r => r.json()),
   loadCSV(POINTS_URL),
