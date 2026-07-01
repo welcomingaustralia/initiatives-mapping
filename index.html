@@ -187,6 +187,20 @@
     .summaryRow strong {
       font-weight: 700;
     }
+
+    .totalRow {
+      font-size: 14px;
+      font-weight: 700;
+    }
+    
+    .subRow span {
+      padding-left: 14px;
+    }
+    
+    .subSubRow span {
+      padding-left: 28px;
+      color: #666;
+    }
     
     .legendSwatch {
       width: 13px;
@@ -1261,6 +1275,7 @@ function updateExplorerState() {
   explorerState.initiatives.communityHubs = initiativeIds.hub.size;
   
   explorerState.initiatives.total =
+  explorerState.welcomingCities.members +
   explorerState.initiatives.universities +
   explorerState.initiatives.workplaces +
   explorerState.initiatives.clubs +
@@ -1271,7 +1286,7 @@ function updateExplorerState() {
   renderExplorerSummary();
 }
 
-  function renderExplorerSummary() {
+  ffunction renderExplorerSummary() {
     const summary = document.getElementById("desktopSummaryContent");
     if (!summary) return;
   
@@ -1283,44 +1298,44 @@ function updateExplorerState() {
       <div class="overviewCard">
         <h4>${regionName}</h4>
   
-        <div class="summaryRow">
-          <span>Total organisations involved</span>
+        <div class="summaryRow totalRow">
+          <span>Total initiatives</span>
           <strong>${explorerState.initiatives.total}</strong>
         </div>
-
-        <div class="summaryRow">
-          <span>Universities</span>
-          <strong>${explorerState.initiatives.universities}</strong>
-        </div>
-        
-        <div class="summaryRow">
-          <span>Workplaces</span>
-          <strong>${explorerState.initiatives.workplaces}</strong>
-        </div>
-        
-        <div class="summaryRow">
-          <span>Clubs</span>
-          <strong>${explorerState.initiatives.clubs}</strong>
-        </div>
-        
-        <div class="summaryRow">
-          <span>Community Organisations</span>
-          <strong>${explorerState.initiatives.communityOrganisations}</strong>
-        </div>
-        
-        <div class="summaryRow">
-          <span>Community Hubs</span>
-          <strong>${explorerState.initiatives.communityHubs}</strong>
-        </div>
   
-        <div class="summaryRow">
+        <div class="summaryRow subRow">
           <span>Welcoming Cities</span>
           <strong>${explorerState.welcomingCities.members}</strong>
         </div>
   
-        <div class="summaryRow">
+        <div class="summaryRow subSubRow">
           <span>Accredited Cities</span>
           <strong>${explorerState.welcomingCities.accredited}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Universities</span>
+          <strong>${explorerState.initiatives.universities}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Workplaces</span>
+          <strong>${explorerState.initiatives.workplaces}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Clubs</span>
+          <strong>${explorerState.initiatives.clubs}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Community Organisations</span>
+          <strong>${explorerState.initiatives.communityOrganisations}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Community Hubs</span>
+          <strong>${explorerState.initiatives.communityHubs}</strong>
         </div>
   
         <div class="summaryRow">
