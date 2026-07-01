@@ -154,6 +154,39 @@
       display: inline-block;
       flex-shrink: 0;
     }
+    .overviewCard {
+      background: #f7f7f7;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    
+    .overviewCard h4 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+    }
+    
+    .summaryRow {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 3px 0;
+      border-top: 1px solid #e5e5e5;
+    }
+    
+    .summaryRow:first-of-type {
+      border-top: none;
+    }
+    
+    .summaryRow span {
+      color: #333;
+    }
+    
+    .summaryRow strong {
+      font-weight: 700;
+    }
     
     .legendSwatch {
       width: 13px;
@@ -359,7 +392,7 @@
   </div>
 
   <div class="panelSection">
-    <h3>Show initiatives</h3>
+    <h3>Map layers</h3>
   
     <div class="legendRow">
       <span class="legendSwatch welcomingCitySwatch"></span>
@@ -409,7 +442,7 @@
   </div>
 
   <div class="panelSection" id="desktopSummary">
-    <h3>Summary</h3>
+    <h3>Overview</h3>
     <div id="desktopSummaryContent"></div>
   </div>
 </div>
@@ -1231,12 +1264,34 @@ function updateExplorerState() {
       : explorerState.selection.state;
   
     summary.innerHTML = `
-      <h3>${regionName}</h3>
-      <p><strong>Total initiatives:</strong> ${explorerState.initiatives.total}</p>
-      <p><strong>Welcoming Cities:</strong> ${explorerState.welcomingCities.members}</p>
-      <p><strong>Accredited Welcoming Cities:</strong> ${explorerState.welcomingCities.accredited}</p>
-      <p><strong>PALM Alliance LGAs:</strong> ${explorerState.palmAlliance.members}</p>
-      <p><strong>CRISP settled:</strong> ${explorerState.crisp.peopleSettled}</p>
+      <div class="overviewCard">
+        <h4>${regionName}</h4>
+  
+        <div class="summaryRow">
+          <span>Total initiatives</span>
+          <strong>${explorerState.initiatives.total}</strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>Welcoming Cities</span>
+          <strong>${explorerState.welcomingCities.members}</strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>Accredited Cities</span>
+          <strong>${explorerState.welcomingCities.accredited}</strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>PALM Alliance LGAs</span>
+          <strong>${explorerState.palmAlliance.members}</strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>CRISP settled</span>
+          <strong>${explorerState.crisp.peopleSettled}</strong>
+        </div>
+      </div>
     `;
   }
   updateExplorerState();
