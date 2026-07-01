@@ -1160,6 +1160,7 @@ Promise.all([
   
     initiativeMarkers.forEach(marker => {
       const markerState = marker.options.state;
+      if (selectedState !== "ALL" && markerState !== selectedState) return;
       const markerType = marker.options.type;
       const group = groups[markerType];
   
@@ -1252,8 +1253,11 @@ function updateExplorerState() {
   };
 
   initiativeMarkers.forEach(marker => {
+  initiativeMarkers.forEach(marker => {
     const markerState = marker.options.state;
-
+  
+    if (selectedState !== "ALL" && markerState !== selectedState) return;
+  
     const type = marker.options.type;
     const id = marker.options.institutionId || marker.options.title;
     
@@ -1286,7 +1290,7 @@ function updateExplorerState() {
   renderExplorerSummary();
 }
 
-  ffunction renderExplorerSummary() {
+  function renderExplorerSummary() {
     const summary = document.getElementById("desktopSummaryContent");
     if (!summary) return;
   
