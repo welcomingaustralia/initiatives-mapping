@@ -134,39 +134,34 @@
       color: black;
     }
 
-    .legendRow,
-    .layerToggleRow {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 8px 0;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-    
-    .legendRow span:last-child,
-    .layerLabel {
-      flex: 1;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-    
-    .legendRow {
-      padding-left: 0;
-    }
 
-    .layerToggleRow {
+    .layerTable {
+      width: 100%;
+    }
+    
+    .layerRow {
       display: grid;
-      grid-template-columns: 14px 1fr 38px;
+      grid-template-columns: 16px 1fr 42px;
       align-items: center;
-      gap: 8px;
-      margin: 9px 0;
-      font-size: 14px;
+      column-gap: 10px;
+      min-height: 28px;
+      margin: 6px 0;
+      font-size: 13px;
+    }
+    
+    label.layerRow {
       cursor: pointer;
     }
     
-    .layerLabel {
-      line-height: 1.2;
+    .layerName {
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    
+    .layerDivider {
+      height: 1px;
+      background: #e5e5e5;
+      margin: 8px 0;
     }
     
     .switchInput {
@@ -174,12 +169,13 @@
     }
     
     .switchSlider {
+      justify-self: end;
       width: 36px;
       height: 20px;
-      background: #ccc;
+      background: #c9c9c9;
       border-radius: 999px;
       position: relative;
-      transition: background 0.2s ease;
+      transition: .2s;
     }
     
     .switchSlider::before {
@@ -187,56 +183,12 @@
       position: absolute;
       width: 16px;
       height: 16px;
-      left: 2px;
       top: 2px;
+      left: 2px;
       background: white;
       border-radius: 50%;
-      transition: transform 0.2s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.25);
-    }
-    
-    .switchInput:checked + .switchSlider {
-      background: #008da8;
-    }
-    
-    .switchInput:checked + .switchSlider::before {
-      transform: translateX(16px);
-    }
-    
-    .layerToggleRow {
-      cursor: pointer;
-    }
-    
-    .switchInput {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
-    
-    .switchSlider {
-      width: 34px;
-      height: 18px;
-      background: #b8b8b8;
-      border-radius: 999px;
-      position: relative;
-      transition: background 0.2s ease;
-      flex-shrink: 0;
-      margin-left: auto;
-    }
-    
-    .switchSlider::before {
-      content: "";
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      left: 2px;
-      top: 2px;
-      background: white;
-      border-radius: 50%;
-      transition: transform 0.2s ease;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: .2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,.25);
     }
     
     .switchInput:checked + .switchSlider {
@@ -247,17 +199,17 @@
       transform: translateX(16px);
     }
     
-    .legendRow input {
-      width: auto;
-      margin: 0;
-    }
-    
     .legendDot {
       width: 12px;
       height: 12px;
       border-radius: 50%;
       display: inline-block;
-      flex-shrink: 0;
+    }
+    
+    .legendSwatch {
+      width: 13px;
+      height: 13px;
+      display: inline-block;
     }
     .overviewCard {
       background: #f7f7f7;
@@ -513,107 +465,64 @@
   <div class="panelSection">
     <h3>Map layers</h3>
   
-    <div class="legendRow">
-      <span class="legendSwatch welcomingCitySwatch"></span>
-      <span>Welcoming Cities</span>
-    </div>
-  
-    <div class="legendRow">
-      <span class="legendSwatch palmSwatch"></span>
-      <span>PALM Mayoral Alliance</span>
-    </div>
-  
-   <label class="layerToggleRow">
-      <div class="layerInfo">
-          <span class="legendDot uniDot"></span>
-          <span>Welcoming Universities</span>
+    <div class="layerTable">
+      <div class="layerRow">
+        <span class="legendSwatch welcomingCitySwatch"></span>
+        <span class="layerName">Welcoming Cities</span>
+        <span></span>
       </div>
   
-      <input
-          type="checkbox"
-          class="desktopLayerToggle switchInput"
-          data-layer="uni"
-          checked>
+      <div class="layerRow">
+        <span class="legendSwatch palmSwatch"></span>
+        <span class="layerName">PALM Mayoral Alliance</span>
+        <span></span>
+      </div>
   
-      <span class="switchSlider"></span>
-  </label>
+      <div class="layerDivider"></div>
   
-    <label class="layerToggleRow">
-        <div class="layerInfo">
-            <span class="legendDot uniDot"></span>
-            <span>Welcoming Workplaces</span>
-        </div>
-    
-        <input
-            type="checkbox"
-            class="desktopLayerToggle switchInput"
-            data-layer="workplace"
-            checked>
-    
+      <label class="layerRow">
+        <span class="legendDot uniDot"></span>
+        <span class="layerName">Welcoming Universities</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="uni" checked>
         <span class="switchSlider"></span>
-    </label>
-    
-    <label class="layerToggleRow">
-        <div class="layerInfo">
-            <span class="legendDot uniDot"></span>
-            <span>Welcoming Clubs</span>
-        </div>
-    
-        <input
-            type="checkbox"
-            class="desktopLayerToggle switchInput"
-            data-layer="club"
-            checked>
-    
+      </label>
+  
+      <label class="layerRow">
+        <span class="legendDot workplaceDot"></span>
+        <span class="layerName">Welcoming Workplaces</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="workplace" checked>
         <span class="switchSlider"></span>
-    </label>
-    
-    <label class="layerToggleRow">
-        <div class="layerInfo">
-            <span class="legendDot uniDot"></span>
-            <span>Community Organisations</span>
-        </div>
-    
-        <input
-            type="checkbox"
-            class="desktopLayerToggle switchInput"
-            data-layer="cop"
-            checked>
-    
+      </label>
+  
+      <label class="layerRow">
+        <span class="legendDot clubDot"></span>
+        <span class="layerName">Welcoming Clubs</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="club" checked>
         <span class="switchSlider"></span>
-    </label>
-    
-    <label class="layerToggleRow">
-        <div class="layerInfo">
-            <span class="legendDot uniDot"></span>
-            <span>Community Hubs</span>
-        </div>
-    
-        <input
-            type="checkbox"
-            class="desktopLayerToggle switchInput"
-            data-layer="hub"
-            checked>
-    
+      </label>
+  
+      <label class="layerRow">
+        <span class="legendDot copDot"></span>
+        <span class="layerName">Community Organisations</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="cop" checked>
         <span class="switchSlider"></span>
-    </label>
-    
-    <label class="layerToggleRow">
-        <div class="layerInfo">
-            <span class="legendDot uniDot"></span>
-            <span>CRISP Settlement</span>
-        </div>
-    
-        <input
-            type="checkbox"
-            class="desktopLayerToggle switchInput"
-            data-layer="crisp"
-            checked>
-    
+      </label>
+  
+      <label class="layerRow">
+        <span class="legendDot hubDot"></span>
+        <span class="layerName">Community Hubs</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="hub" checked>
         <span class="switchSlider"></span>
-    </label>
+      </label>
+  
+      <label class="layerRow">
+        <span class="legendDot crispDot"></span>
+        <span class="layerName">CRISP Settlements</span>
+        <input type="checkbox" class="desktopLayerToggle switchInput" data-layer="crisp" checked>
+        <span class="switchSlider"></span>
+      </label>
+    </div>
   </div>
-
   <div class="panelSection" id="desktopSummary">
     <h3>Overview</h3>
     <div id="desktopSummaryContent"></div>
