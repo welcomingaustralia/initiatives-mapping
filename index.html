@@ -139,15 +139,14 @@
       width: 100%;
     }
     
-    .layerRow {
-      display: grid;
-      grid-template-columns: 16px 1fr 42px;
-      align-items: center;
-      column-gap: 10px;
-      min-height: 28px;
-      margin: 6px 0;
-      font-size: 13px;
-    }
+    .layerRow{
+      display:grid;
+      grid-template-columns:16px 1fr 42px;
+      align-items:center;
+      column-gap:10px;
+      min-height:22px;
+      margin:2px 0;
+  }
     
     label.layerRow {
       cursor: pointer;
@@ -165,8 +164,11 @@
     }
     
     .switchInput {
-      display: none;
-    }
+      position:absolute;
+      opacity:0;
+      width:0;
+      height:0;
+  }
     
     .switchSlider {
       justify-self: end;
