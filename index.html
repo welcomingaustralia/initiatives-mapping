@@ -141,14 +141,24 @@
     }
     
     .layerCard .summaryRow {
-      min-height: 16px;
-    }
+      min-height: 0;
+      padding: 2px 0;
+      line-height: 1.2;
+  }
+
+.layerCard .summaryRow:first-child {
+    padding-top: 0;
+}
+
+.layerCard .summaryRow:last-child {
+    padding-bottom: 0;
+}
     
     .switch {
       position: relative;
       display: inline-block;
-      width: 30px;
-      height: 16px;
+      width: 34px;
+      height: 18px;
       margin: 0;
       flex-shrink: 0;
     }
@@ -173,8 +183,8 @@
     .switch span:before {
       content: "";
       position: absolute;
-      height: 12px;
-      width: 12px;
+      height: 14px;
+      width: 14px;
       left: 2px;
       top: 2px;
       background: white;
@@ -188,7 +198,7 @@
     }
     
     .switch input:checked + span:before {
-      transform: translateX(14px);
+      transform: translateX(16px);
     }
 
 
@@ -224,8 +234,8 @@
       align-items: center;
       gap: 12px;
       font-size: 13px;
-      line-height: 1.2;
-      padding: 1px 0;
+      line-height: 1.5;
+      padding: 3px 0;
       border-top: 1px solid #ececec;
   }
     
