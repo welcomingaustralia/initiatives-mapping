@@ -133,11 +133,38 @@
 #mobileMenuPanel {
   display: none;
 }
+    .explorerSummary {
+      position: absolute;
+      left: 10px;
+      top: 166px;
+      z-index: 10000;
+      background: white;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      padding: 12px 14px;
+      width: min(340px, calc(100vw - 30px));
+      box-sizing: border-box;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .explorerSummary h3 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+    
+    .explorerSummary p {
+      margin: 4px 0;
+    }
+
+
     
     @media (max-width: 600px) {
       #stateFilterBox,
       #lgaSearchBox,
       #orgSearchBox,
+      #explorerSummary,
       .leaflet-control-layers {
         display: none;
       }
@@ -348,7 +375,7 @@
   </div>
 </div>
 
-  
+<div id="explorerSummary" class="explorerSummary"></div>
 <div id="map"></div>
 
 <script>
@@ -1096,9 +1123,29 @@ function updateExplorerState() {
   });
 
   console.log("Explorer state:", explorerState);
+  renderExplorerSummary();
 }
-  updateExplorerState();
+
+  function renderExplorerSummary() {
+    const summary = document.getElementById("explorerSummary");
+    if (!summary) return;
   
+    const regionName = explorerState.selection.state === "ALL"
+      ? "Australia"
+      : explorerState.selection.state;
+  
+    summary.innerHTML = `
+      <h3>${regionName}</h3>
+      <p><strong>Total initiatives:</strong> ${explorerState.initiatives.total}</p>
+      <p><strong>Welcoming Cities:</strong> ${explorerState.welcomingCities.members}</p>
+      <p><strong>Accredited Welcoming Cities:</strong> ${explorerState.welcomingCities.accredited}</p>
+      <p><strong>PALM Alliance LGAs:</strong> ${explorerState.palmAlliance.members}</p>
+      <p><strong>CRISP settled:</strong> ${explorerState.crisp.peopleSettled}</p>
+    `;
+  }
+  updateExplorerState();
+
+
   const stateFilter = document.getElementById("stateFilter");
   const mobileStateFilter = document.getElementById("mobileStateFilter");
   
