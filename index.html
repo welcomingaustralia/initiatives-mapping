@@ -1126,18 +1126,20 @@ Promise.all([
     orgDropdown.style.display = matches.length ? "block" : "none";
   });
 
-  L.control.layers(
-    null,
-    {
-      "Welcoming Universities": uniCluster,
-      "Welcoming Workplaces": workplaceCluster,
-      "Welcoming Clubs": clubCluster,
-      "Community Organisations": copCluster,
-      "Community Hubs": hubCluster,
-      "CRISP Settlements": crispLayer
-    },
-    { collapsed: false }
-  ).addTo(map);
+  if (window.innerWidth <= 600) {
+    L.control.layers(
+      null,
+      {
+        "Welcoming Universities": uniCluster,
+        "Welcoming Workplaces": workplaceCluster,
+        "Welcoming Clubs": clubCluster,
+        "Community Organisations": copCluster,
+        "Community Hubs": hubCluster,
+        "CRISP Settlements": crispLayer
+      },
+      { collapsed: false }
+    ).addTo(map);
+  }
 
   const legend = L.control({ position: "bottomright" });
 
@@ -1164,7 +1166,9 @@ Promise.all([
     return div;
   };
 
-  legend.addTo(map);
+  if (window.innerWidth <= 600) {
+    legend.addTo(map);
+  }
 
   const mobileMenuButton = document.getElementById("mobileMenuButton");
   const mobileMenuPanel = document.getElementById("mobileMenuPanel");
