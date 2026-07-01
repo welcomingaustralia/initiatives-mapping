@@ -887,7 +887,8 @@ Promise.all([
       title: r.name,
       postcode: r.postcode,
       state: (r.state || "").trim().toUpperCase(),
-      type: type
+      type: type,
+      institutionId: institutionId
     });
 
     marker.bindTooltip(r.name, {
@@ -1228,19 +1229,22 @@ function updateExplorerState() {
     }
   });
 
+  const initiativeIds = {
+    uni: new Set(),
+    workplace: new Set(),
+    club: new Set(),
+    cop: new Set(),
+    hub: new Set()
+  };
+
   initiativeMarkers.forEach(marker => {
     const markerState = marker.options.state;
 
-    if (selectedState !== "ALL" && markerState !== selectedState) return;
-
-    if (marker.options.type === "uni") explorerState.initiatives.universities++;
-    if (marker.options.type === "workplace") explorerState.initiatives.workplaces++;
-    if (marker.options.type === "club") explorerState.initiatives.clubs++;
-    if (marker.options.type === "cop") explorerState.initiatives.communityOrganisations++;
-    if (marker.options.type === "hub") explorerState.initiatives.communityHubs++;
-
-    if (marker.options.type) {
-      explorerState.initiatives.total++;
+    const type = marker.options.type;
+    const id = marker.options.institutionId || marker.options.title;
+    
+    if (initiativeIds[type]) {
+      initiativeIds[type].add(id);
     }
 
     explorerState.organisations.push({
@@ -1250,7 +1254,19 @@ function updateExplorerState() {
       accreditation: marker.options.accreditation || ""
     });
   });
-
+  explorerState.initiatives.universities = initiativeIds.uni.size;
+  explorerState.initiatives.workplaces = initiativeIds.workplace.size;
+  explorerState.initiatives.clubs = initiativeIds.club.size;
+  explorerState.initiatives.communityOrganisations = initiativeIds.cop.size;
+  explorerState.initiatives.communityHubs = initiativeIds.hub.size;
+  
+  explorerState.initiatives.total =
+  explorerState.initiatives.universities +
+  explorerState.initiatives.workplaces +
+  explorerState.initiatives.clubs +
+  explorerState.initiatives.communityOrganisations +
+  explorerState.initiatives.communityHubs;
+  
   console.log("Explorer state:", explorerState);
   renderExplorerSummary();
 }
