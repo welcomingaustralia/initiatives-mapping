@@ -134,6 +134,50 @@
       color: black;
     }
 
+    .legendRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+    
+    .legendRow input {
+      width: auto;
+      margin: 0;
+    }
+    
+    .legendDot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    
+    .legendSwatch {
+      width: 13px;
+      height: 13px;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    
+    .welcomingCitySwatch {
+      background: #CCA234;
+      border: 1px solid #CCA234;
+    }
+    
+    .palmSwatch {
+      border: 2px dashed #EC6C5B;
+    }
+    
+    .uniDot { background:#00AFC7; }
+    .workplaceDot { background:#FD4731; }
+    .clubDot { background:#228B22; }
+    .copDot { background:#ff8800; }
+    .hubDot { background:#02006C; }
+    .crispDot { background:#d98ca3; }
+
     
     @media (max-width: 600px) {
       .leaflet-control-layers {
@@ -312,6 +356,56 @@
 
     <label for="orgSearch">Organisation</label>
     <input id="orgSearch" type="text" placeholder="Search organisation or postcode...">
+  </div>
+
+  <div class="panelSection">
+    <h3>Show initiatives</h3>
+  
+    <div class="legendRow">
+      <span class="legendSwatch welcomingCitySwatch"></span>
+      <span>Welcoming Cities</span>
+    </div>
+  
+    <div class="legendRow">
+      <span class="legendSwatch palmSwatch"></span>
+      <span>PALM Mayoral Alliance</span>
+    </div>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="uni" checked>
+      <span class="legendDot uniDot"></span>
+      <span>Welcoming Universities</span>
+    </label>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="workplace" checked>
+      <span class="legendDot workplaceDot"></span>
+      <span>Welcoming Workplaces</span>
+    </label>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="club" checked>
+      <span class="legendDot clubDot"></span>
+      <span>Welcoming Clubs</span>
+    </label>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="cop" checked>
+      <span class="legendDot copDot"></span>
+      <span>Community Organisations</span>
+    </label>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="hub" checked>
+      <span class="legendDot hubDot"></span>
+      <span>Community Hubs</span>
+    </label>
+  
+    <label class="legendRow">
+      <input type="checkbox" class="desktopLayerToggle" data-layer="crisp" checked>
+      <span class="legendDot crispDot"></span>
+      <span>CRISP Settlements</span>
+    </label>
   </div>
 
   <div class="panelSection" id="desktopSummary">
@@ -972,6 +1066,20 @@ Promise.all([
     hub: hubCluster,
     crisp: crispLayer
   };
+
+  document.querySelectorAll(".desktopLayerToggle").forEach(toggle => {
+    toggle.addEventListener("change", () => {
+      const layer = mobileLayerMap[toggle.dataset.layer];
+  
+      if (!layer) return;
+  
+      if (toggle.checked) {
+        map.addLayer(layer);
+      } else {
+        map.removeLayer(layer);
+      }
+    });
+  });
   
   document.querySelectorAll(".mobileLayerToggle").forEach(toggle => {
     toggle.addEventListener("change", () => {
