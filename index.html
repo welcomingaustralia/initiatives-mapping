@@ -309,26 +309,36 @@
 
 <body>
 
-<div id="stateFilterBox" class="searchBox">
-  <select id="stateFilter">
-    <option value="ALL">All States & Territories</option>
-    <option value="ACT">ACT</option>
-    <option value="NSW">NSW</option>
-    <option value="NT">NT</option>
-    <option value="QLD">QLD</option>
-    <option value="SA">SA</option>
-    <option value="TAS">TAS</option>
-    <option value="VIC">VIC</option>
-    <option value="WA">WA</option>
-  </select>
-</div>
-  
-<div id="lgaSearchBox" class="searchBox">
-  <input id="lgaSearch" type="text" placeholder="Search council area...">
-</div>
+<div id="desktopExplorerPanel">
+  <h2>Welcoming Australia Explorer</h2>
 
-<div id="orgSearchBox" class="searchBox">
-  <input id="orgSearch" type="text" placeholder="Search organisation or postcode...">
+  <div class="panelSection">
+    <h3>Search</h3>
+
+    <label for="stateFilter">State / Territory</label>
+    <select id="stateFilter">
+      <option value="ALL">All States & Territories</option>
+      <option value="ACT">ACT</option>
+      <option value="NSW">NSW</option>
+      <option value="NT">NT</option>
+      <option value="QLD">QLD</option>
+      <option value="SA">SA</option>
+      <option value="TAS">TAS</option>
+      <option value="VIC">VIC</option>
+      <option value="WA">WA</option>
+    </select>
+
+    <label for="lgaSearch">Council area</label>
+    <input id="lgaSearch" type="text" placeholder="Search council area...">
+
+    <label for="orgSearch">Organisation</label>
+    <input id="orgSearch" type="text" placeholder="Search organisation or postcode...">
+  </div>
+
+  <div class="panelSection" id="desktopSummary">
+    <h3>Summary</h3>
+    <div id="desktopSummaryContent"></div>
+  </div>
 </div>
 
 <button id="mobileMenuButton">☰ Search & filters</button>
@@ -375,7 +385,6 @@
   </div>
 </div>
 
-<div id="explorerSummary" class="explorerSummary"></div>
 <div id="map"></div>
 
 <script>
