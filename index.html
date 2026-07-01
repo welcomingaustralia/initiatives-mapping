@@ -440,7 +440,7 @@ const lgaCentres = {};
 const stateBounds = {};
 let selectedLGALayer = null;
 let currentStateFilter = "ALL";
-const lgaSummaryLookup = {};
+const lgaMasterLookup = {};
 const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
 
@@ -456,12 +456,12 @@ Promise.all([
   
     if (!code) return;
   
-    lgaSummaryLookup[code] = row;
+    lgaMasterLookup[code] = row;
   });
 
   function lgaStyle(feature) {
     const code = feature.properties.LGA_CODE25;
-    const profile = lgaSummaryLookup[code];
+    const profile = lgaMasterLookup[code];
   
     const isWelcoming = profile?.welcoming_city_member?.trim().toUpperCase() === "Y";
     const isPalm = profile?.palm_alliance?.trim().toUpperCase() === "Y";
@@ -523,7 +523,7 @@ Promise.all([
   function showLGAPopup(rawName, layer) {
     const code = layer.feature.properties.LGA_CODE25;
     const key = normaliseName(rawName);
-    const profile = lgaSummaryLookup[code];
+    const profile = lgaMasterLookup[code];
   
     if (!profile) return;
   
