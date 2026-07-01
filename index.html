@@ -140,21 +140,6 @@
       gap: 8px;
     }
     
-    .layerCard .summaryRow {
-      min-height: 0;
-      padding: 2px 0;
-      line-height: 1.2;
-      border-top: none;
-  }
-
-.layerCard .summaryRow:first-child {
-    padding-top: 0;
-}
-
-.layerCard .summaryRow:last-child {
-    padding-bottom: 0;
-}
-    
     .switch {
       position: relative;
       display: inline-block;
@@ -200,6 +185,22 @@
     
     .switch input:checked + span:before {
       transform: translateX(16px);
+    }
+
+    .layerCard .layerRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 26px;
+      padding: 0;
+      margin: 0;
+      font-size: 13px;
+    }
+    
+    .layerCard .layerRow > span:first-child {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
 
@@ -473,17 +474,17 @@
   <h3>Map layers</h3>
 
   <div class="overviewCard layerCard">
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendSwatch welcomingCitySwatch"></span> Welcoming Cities</span>
       <strong></strong>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendSwatch palmSwatch"></span> PALM Mayoral Alliance</span>
       <strong></strong>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot uniDot"></span> Welcoming Universities</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="uni" checked>
@@ -491,7 +492,7 @@
       </label>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot workplaceDot"></span> Welcoming Workplaces</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="workplace" checked>
@@ -499,7 +500,7 @@
       </label>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot clubDot"></span> Welcoming Clubs</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="club" checked>
@@ -507,7 +508,7 @@
       </label>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot copDot"></span> Community Organisations</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="cop" checked>
@@ -515,7 +516,7 @@
       </label>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot hubDot"></span> Community Hubs</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="hub" checked>
@@ -523,7 +524,7 @@
       </label>
     </div>
 
-    <div class="summaryRow">
+    <div class="layerRow">
       <span><span class="legendDot crispDot"></span> CRISP Settlements</span>
       <label class="switch">
         <input type="checkbox" class="desktopLayerToggle" data-layer="crisp" checked>
