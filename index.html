@@ -1253,18 +1253,17 @@ function updateExplorerState() {
   };
 
   initiativeMarkers.forEach(marker => {
-  initiativeMarkers.forEach(marker => {
     const markerState = marker.options.state;
   
     if (selectedState !== "ALL" && markerState !== selectedState) return;
   
     const type = marker.options.type;
     const id = marker.options.institutionId || marker.options.title;
-    
+  
     if (initiativeIds[type]) {
       initiativeIds[type].add(id);
     }
-
+  
     explorerState.organisations.push({
       name: marker.options.title,
       type: marker.options.type,
