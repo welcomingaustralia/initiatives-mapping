@@ -24,7 +24,7 @@
 11520,Canada Bay,NSW,Y,,,1,40.1,39.3
 11570,Canterbury-Bankstown,NSW,Y,,,5,44.6,58.8
 11600,Carrathool,NSW,,,,0,14.1,9.6
-11650,Central Coast (NSW),NSW,,,Y,6,16.1,7
+11650,Central Coast (NSW),NSW,,,,6,16.1,7
 11700,Central Darling,NSW,,,,0,3.9,1.9
 11720,Cessnock,NSW,,,,2,7.2,2.7
 11730,Clarence Valley,NSW,,,,0,8.2,2.7
@@ -509,7 +509,7 @@
 60210,Break O'Day,TAS,,,,1,13.1,3
 60410,Brighton,TAS,,,,0,6.3,3.2
 60610,Burnie,TAS,,,,0,10.1,4.5
-60810,Central Coast (Tas.),TAS,,,,0,9.5,2.4
+60810,Central Coast (Tas.),TAS,,,Y,0,9.5,2.4
 61010,Central Highlands (Tas.),TAS,,,,0,10.2,3.1
 61210,Circular Head,TAS,,,,0,10.4,4.2
 61410,Clarence,TAS,Y,,,3,14.2,8.3
@@ -542,7 +542,7 @@
 70540,Belyuen,NT,,,,0,0,77.2
 70620,Central Desert,NT,,,,0,3.8,76.4
 70700,Coomalie,NT,,,,0,13.6,6.3
-71000,Darwin,NT,,,,3,34.2,30.3
+71000,Darwin,NT,Y,,,3,34.2,30.3
 71150,Darwin Waterfront Precinct,NT,,,,0,38.6,24.9
 71500,East Arnhem,NT,,,,0,2,88.8
 72200,Katherine,NT,,,,0,15.2,18
