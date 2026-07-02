@@ -1447,13 +1447,30 @@ function updateExplorerState() {
   explorerState.initiatives.communityOrganisations = initiativeIds.cop.size;
   explorerState.initiatives.communityHubs = initiativeIds.hub.size;
   
+  const cityOrPalmLgas = new Set();
+
+  Object.values(lgaMasterLookup).forEach(profile => {
+    const profileState = (profile.state || "").trim().toUpperCase();
+  
+    if (selectedState !== "ALL" && profileState !== selectedState) return;
+  
+    const isWelcomingCity =
+      profile.welcoming_city_member?.trim().toUpperCase() === "Y";
+  
+    const isPalmAlliance =
+      profile.palm_alliance?.trim().toUpperCase() === "Y";
+  
+    if (isWelcomingCity || isPalmAlliance) {
+      cityOrPalmLgas.add(profile.lga_code);
+    }
+  });
+  
   explorerState.initiatives.total =
-  explorerState.welcomingCities.members +
-  explorerState.initiatives.universities +
-  explorerState.initiatives.workplaces +
-  explorerState.initiatives.clubs +
-  explorerState.initiatives.communityOrganisations +
-  explorerState.initiatives.communityHubs;
+    cityOrPalmLgas.size +
+    explorerState.initiatives.universities +
+    explorerState.initiatives.workplaces +
+    explorerState.initiatives.clubs +
+    explorerState.initiatives.communityOrganisations;
   
   console.log("Explorer state:", explorerState);
   renderExplorerSummary();
@@ -1502,18 +1519,18 @@ function updateExplorerState() {
         </div>
   
         <div class="summaryRow subRow">
+          <span>PALM Alliance LGAs</span>
+          <strong>${explorerState.palmAlliance.members}</strong>
+        </div>
+        
+        <div class="summaryRow">
           <span>Community Organisations</span>
           <strong>${explorerState.initiatives.communityOrganisations}</strong>
         </div>
-  
-        <div class="summaryRow subRow">
+        
+        <div class="summaryRow">
           <span>Community Hubs</span>
           <strong>${explorerState.initiatives.communityHubs}</strong>
-        </div>
-  
-        <div class="summaryRow">
-          <span>PALM Alliance LGAs</span>
-          <strong>${explorerState.palmAlliance.members}</strong>
         </div>
   
         <div class="summaryRow">
