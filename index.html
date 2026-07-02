@@ -71,23 +71,15 @@
     
     .clearSearch {
         position: absolute;
-        right: 10px;
+        right: 11px;
         top: 50%;
         transform: translateY(-50%);
-        display: none;
-        cursor: pointer;
+        font-size: 20px;
+        font-weight: 400;
         color: #999;
+        cursor: pointer;
         line-height: 1;
-    }
-    
-    .searchWrapper.hasText .clearSearch {
-        display: block;
-    }
-    
-    .clearSearch i {
-        display: block;
-        font-size: 16px;
-        line-height: 1;
+        user-select: none;
     }
     
     .clearSearch:hover {
@@ -525,16 +517,12 @@
 
     <div class="searchWrapper">
         <input id="lgaSearch" type="text" placeholder="Search council...">
-        <span class="clearSearch" data-target="lgaSearch">
-          <i class="fa fa-times-circle"></i>
-        </span>
+        <span class="clearSearch" data-target="lgaSearch">&times;</span>
     </div>
     
     <div class="searchWrapper">
         <input id="orgSearch" type="text" placeholder="Search organisation...">
-        <span class="clearSearch" data-target="orgSearch">
-          <i class="fa fa-times-circle"></i>
-        </span>
+        <span class="clearSearch" data-target="orgSearch">&times;</span>
     </div>
   </div>
 
