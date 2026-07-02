@@ -866,7 +866,7 @@ Promise.all([
     
       if (zoomToLGA) {
         map.fitBounds(layer.getBounds(), {
-          maxZoom: 11,
+          maxZoom: 9,
           paddingTopLeft: [20, 150],
           paddingBottomRight: [20, 80]
         });
@@ -900,12 +900,24 @@ Promise.all([
 
       layer.bindTooltip(displayName);
 
-      layer.on("click", () => {
+      layer.on("click", (e) => {
+        L.DomEvent.stopPropagation(e);
         selectLGA(rawName, layer);
       });
     }
   }).addTo(map);
 
+  map.on("click", () => {
+      if (!selectedLGALayer) return;
+    
+      selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+      selectedLGALayer = null;
+    
+      explorerState.selection.lga = null;
+      renderExplorerSummary();
+    
+      map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
+    });
 
   const circleColorMap = {
     uni: "#00AFC7",
