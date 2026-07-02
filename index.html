@@ -1309,6 +1309,11 @@ Promise.all([
     });
   
     if (selectedState === "ALL") {
+      if (selectedLGALayer) {
+          selectedLGALayer.closePopup();
+          selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+          selectedLGALayer = null;
+      }
       map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
     } else if (stateBounds[selectedState]) {
       map.fitBounds(stateBounds[selectedState], {
