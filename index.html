@@ -849,100 +849,29 @@ Promise.all([
     }, 900);
 }
 
-  function showLGAPopup(rawName, layer) {
-    const code = layer.feature.properties.LGA_CODE25;
-    const key = normaliseName(rawName);
-    const profile = lgaMasterLookup[code];
-  
-    if (!profile) return;
-    setExplorerLGA(rawName, layer);
-  
-    const isWelcoming = profile.welcoming_city_member?.trim().toUpperCase() === "Y";
-    const isPalm = profile.palm_alliance?.trim().toUpperCase() === "Y";
-
-    const counts = initiativeCountsByLGA[key] || {
-      uni: new Set(),
-      workplace: new Set(),
-      club: new Set(),
-      cop: new Set(),
-      hub: new Set()
-    };
-
-    const initiativeRows = [
-      ["Welcoming Universities", counts.uni.size],
-      ["Welcoming Workplaces", counts.workplace.size],
-      ["Welcoming Clubs", counts.club.size],
-      ["Community Organisations", counts.cop.size],
-      ["Community Hubs", counts.hub.size]
-    ].filter(row => row[1] > 0);
-
-    const initiativeText = initiativeRows.length
-      ? `
-        <hr>
-        <p style="margin:8px 0 4px 0;"><strong>Initiatives</strong></p>
-        ${initiativeRows.map(row => `
-          <p style="margin:4px 0;">${row[0]}: ${row[1]}</p>
-        `).join("")}
-      `
-      : "";
-
-    const accreditedOrgs = accreditedOrgsByLGA[key]
-      ? Array.from(accreditedOrgsByLGA[key].values())
-      : [];
-
-    const membershipItems = [];
-
-    if (isWelcoming) {
-      membershipItems.push(
-        `<p style="margin:6px 0;"><strong>Welcoming Cities Network Member</strong></p>`
-      );
+  function selectLGA(rawName, layer, zoomToLGA = true) {
+      if (selectedLGALayer === layer) {
+        selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+        selectedLGALayer = null;
+    
+        explorerState.selection.lga = null;
+        renderExplorerSummary();
+    
+        map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
+        return;
+      }
+    
+      highlightLGA(layer);
+      setExplorerLGA(rawName, layer);
+    
+      if (zoomToLGA) {
+        map.fitBounds(layer.getBounds(), {
+          maxZoom: 11,
+          paddingTopLeft: [20, 150],
+          paddingBottomRight: [20, 80]
+        });
+      }
     }
-
-    if (isPalm) {
-      membershipItems.push(
-        `<p style="margin:6px 0;"><strong>PALM Mayoral Alliance Member</strong></p>`
-      );
-    }
-
-    const membershipText = membershipItems.join("");
-
-    const accreditationText = profile.welcoming_city_accreditation?.trim()
-      ? `<p style="margin:6px 0;"><strong>Welcoming City Accreditation:</strong> ${profile.welcoming_city_accreditation}</p>`
-      : "";
-
-    const accreditedOrgText = accreditedOrgs.length
-      ? `
-        <hr>
-        <p style="margin:8px 0 4px 0;"><strong>Accredited Organisations</strong></p>
-        <ul style="margin:4px 0 0 18px; padding:0;">
-          ${accreditedOrgs.map(org => `
-            <li>${org.name} (${org.level})</li>
-          `).join("")}
-        </ul>
-      `
-      : "";
-
-    const popupContent = `
-      <div style="min-width:240px;">
-        <h3 style="margin:0 0 8px 0;">${rawName}</h3>
-
-        ${membershipText}
-        ${accreditationText}
-
-        ${initiativeText}
-
-        ${accreditedOrgText}
-
-        <hr>
-
-        <p style="margin:8px 0 4px 0;"><strong>Community Profile</strong></p>
-        <p style="margin:4px 0;"><strong>Born overseas:</strong> ${profile.overseas_born_pct}%</p>
-        <p style="margin:4px 0;"><strong>Language other than English:</strong> ${profile.language_other_than_english_pct}%</p>
-      </div>
-    `;
-
-    layer.bindPopup(popupContent).openPopup();
-  }
 
   L.geoJSON(geojson, {
     style: lgaStyle,
@@ -972,8 +901,7 @@ Promise.all([
       layer.bindTooltip(displayName);
 
       layer.on("click", () => {
-        highlightLGA(layer);
-        showLGAPopup(rawName, layer);
+        selectLGA(rawName, layer);
       });
     }
   }).addTo(map);
@@ -1792,13 +1720,7 @@ function setExplorerLGA(rawName, layer) {
       item.onclick = () => {
         input.value = info.displayName;
         dropdown.style.display = "none";
-        map.fitBounds(info.layer.getBounds(), {
-          maxZoom: 11,
-          paddingTopLeft: [20, 150],
-          paddingBottomRight: [20, 80]
-        });
-        flashLGA(info.layer);
-        showLGAPopup(info.displayName, info.layer);
+        selectLGA(info.displayName, info.layer);
       };
 
       dropdown.appendChild(item);
@@ -1850,11 +1772,7 @@ mobileLgaInput.addEventListener("input", () => {
       mobileLgaDropdown.style.display = "none";
       mobileMenuPanel.classList.remove("open");
 
-      const centre = info.layer.getBounds().getCenter();
-      map.setView(centre, 10);
-
-      flashLGA(info.layer);
-      showLGAPopup(info.displayName, info.layer);
+      selectLGA(info.displayName, info.layer);
     };
 
     mobileLgaDropdown.appendChild(item);
