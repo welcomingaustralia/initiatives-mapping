@@ -1596,13 +1596,50 @@ function setExplorerLGA(rawName, layer) {
           ${
             !hasAnyInitiative
               ? `
+                  <div class="summaryRow">
+                    <span>
+                      No organisations in this region are currently part of <strong>Welcoming Australia initiatives</strong>.
+                      <br><br>
+                      <a href="https://welcoming.org.au"
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         style="display:inline-block;
+                                padding:6px 12px;
+                                background:#CCA234;
+                                color:#fff;
+                                text-decoration:none;
+                                border-radius:5px;
+                                font-weight:bold;">
+                        Learn how to get involved
+                      </a>
+                    </span>
+                  </div>
+                  `
+              : ""
+          }
+          
+          ${
+            counts.hub.size > 0
+              ? `
                 <div class="summaryRow">
-                  <span>In this region no organisations are part of Welcoming initiatives.</span>
+                  <span>Community Hubs</span>
+                  <strong>${counts.hub.size}</strong>
                 </div>
               `
               : ""
           }
-  
+          
+          ${
+            Number(profile.crisp_settled || 0) > 0
+              ? `
+                <div class="summaryRow">
+                  <span>CRISP settled</span>
+                  <strong>${publicCountText(Number(profile.crisp_settled || 0))}</strong>
+                </div>
+              `
+              : ""
+          }
+          
           <div class="summaryRow totalRow">
             <span>Community profile</span>
             <strong></strong>
