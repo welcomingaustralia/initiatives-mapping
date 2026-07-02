@@ -70,16 +70,22 @@
     }
     
     .clearSearch {
-        position: absolute;
-        right: 11px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 20px;
-        font-weight: 400;
-        color: #999;
-        cursor: pointer;
-        line-height: 1;
-        user-select: none;
+      position: absolute;
+      right: 10px;
+      top: 9px;
+      width: 18px;
+      height: 18px;
+    
+      display: none;
+      align-items: center;
+      justify-content: center;
+    
+      font-size: 18px;
+      font-weight: 400;
+      color: #999;
+      cursor: pointer;
+      line-height: 18px;
+      user-select: none;
     }
     
     .clearSearch:hover {
@@ -183,9 +189,6 @@
     #stateFilter,
     #lgaSearch {
       margin-bottom: 10px;
-    }
-    #lgaSearch + .clearSearch {
-      transform: translateY(calc(-50% - 1px));
     }
 
     .layerCard .summaryRow span:first-child {
@@ -1658,7 +1661,7 @@ mobileOrgInput.addEventListener("input", () => {
     const input = document.getElementById(btn.dataset.target);
 
     input.addEventListener("input", () => {
-      btn.style.display = input.value ? "block" : "none";
+      btn.style.display = input.value ? "flex" : "none";
     });
 
     btn.addEventListener("click", () => {
