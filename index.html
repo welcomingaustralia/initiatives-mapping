@@ -855,6 +855,7 @@ Promise.all([
     const profile = lgaMasterLookup[code];
   
     if (!profile) return;
+    setExplorerLGA(rawName, layer);
   
     const isWelcoming = profile.welcoming_city_member?.trim().toUpperCase() === "Y";
     const isPalm = profile.palm_alliance?.trim().toUpperCase() === "Y";
@@ -1342,6 +1343,8 @@ function smartSearchScore(text, query) {
           selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
           selectedLGALayer = null;
       }
+      explorerState.selection.lga = null;
+      renderExplorerSummary();
       map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
     } else if (stateBounds[selectedState]) {
       map.fitBounds(stateBounds[selectedState], {
@@ -1476,9 +1479,149 @@ function updateExplorerState() {
   renderExplorerSummary();
 }
 
+function setExplorerLGA(rawName, layer) {
+  const code = layer.feature.properties.LGA_CODE25;
+  const key = normaliseName(rawName);
+  const profile = lgaMasterLookup[code];
+
+  if (!profile) return;
+
+  const counts = initiativeCountsByLGA[key] || {
+    uni: new Set(),
+    workplace: new Set(),
+    club: new Set(),
+    cop: new Set(),
+    hub: new Set()
+  };
+
+  explorerState.selection.lga = {
+    name: publicLGAName(rawName),
+    profile,
+    counts
+  };
+
+  renderExplorerSummary();
+}
+
+  
   function renderExplorerSummary() {
     const summary = document.getElementById("desktopSummaryContent");
     if (!summary) return;
+  
+    if (explorerState.selection.lga) {
+      const lga = explorerState.selection.lga;
+      const profile = lga.profile;
+      const counts = lga.counts;
+  
+      const isWelcoming =
+        profile.welcoming_city_member?.trim().toUpperCase() === "Y";
+  
+      const isPalm =
+        profile.palm_alliance?.trim().toUpperCase() === "Y";
+  
+      const accreditation = profile.welcoming_city_accreditation?.trim();
+  
+      const initiativeRows = [
+        ["Universities", counts.uni.size],
+        ["Workplaces", counts.workplace.size],
+        ["Clubs", counts.club.size],
+        ["Community Organisations", counts.cop.size]
+      ].filter(row => row[1] > 0);
+  
+      const hasAnyInitiative =
+        isWelcoming ||
+        isPalm ||
+        initiativeRows.length > 0;
+  
+      summary.innerHTML = `
+        <div class="overviewCard">
+          <h4>${lga.name}</h4>
+  
+          ${
+            isWelcoming
+              ? `
+                <div class="summaryRow">
+                  <span>Welcoming Cities</span>
+                  <strong>Yes</strong>
+                </div>
+              `
+              : `
+                <div class="summaryRow">
+                  <span>Welcoming Cities</span>
+                  <strong>No</strong>
+                </div>
+              `
+          }
+  
+          ${
+            accreditation
+              ? `
+                <div class="summaryRow subSubRow">
+                  <span>Accreditation</span>
+                  <strong>${accreditation}</strong>
+                </div>
+              `
+              : ""
+          }
+  
+          ${
+            isPalm
+              ? `
+                <div class="summaryRow">
+                  <span>PALM Alliance</span>
+                  <strong>Yes</strong>
+                </div>
+              `
+              : ""
+          }
+  
+          ${
+            initiativeRows.length
+              ? `
+                <div class="summaryRow totalRow">
+                  <span>Other initiatives</span>
+                  <strong>${initiativeRows.reduce((sum, row) => sum + row[1], 0)}</strong>
+                </div>
+  
+                ${initiativeRows.map(row => `
+                  <div class="summaryRow subRow">
+                    <span>${row[0]}</span>
+                    <strong>${row[1]}</strong>
+                  </div>
+                `).join("")}
+              `
+              : ""
+          }
+  
+          ${
+            !hasAnyInitiative
+              ? `
+                <div class="summaryRow">
+                  <span>In this region no organisations are part of Welcoming initiatives.</span>
+                </div>
+              `
+              : ""
+          }
+  
+          <div class="summaryRow totalRow">
+            <span>Community profile</span>
+            <strong></strong>
+          </div>
+  
+          <div class="summaryRow">
+            <span>Born overseas</span>
+            <strong>${profile.overseas_born_pct}%</strong>
+          </div>
+  
+          <div class="summaryRow">
+            <span>Language other than English</span>
+            <strong>${profile.language_other_than_english_pct}%</strong>
+          </div>
+        </div>
+      `;
+  
+      return;
+    }
   
     const regionName = explorerState.selection.state === "ALL"
       ? "Australia"
@@ -1489,7 +1632,7 @@ function updateExplorerState() {
         <h4>${regionName}</h4>
   
         <div class="summaryRow totalRow">
-          <span>Total Welcoming Initiatives</span>
+          <span>Total initiatives</span>
           <strong>${explorerState.initiatives.total}</strong>
         </div>
   
@@ -1504,30 +1647,30 @@ function updateExplorerState() {
         </div>
   
         <div class="summaryRow subRow">
-          <span>Welcoming Universities</span>
+          <span>PALM Alliance LGAs</span>
+          <strong>${explorerState.palmAlliance.members}</strong>
+        </div>
+  
+        <div class="summaryRow subRow">
+          <span>Universities</span>
           <strong>${explorerState.initiatives.universities}</strong>
         </div>
   
         <div class="summaryRow subRow">
-          <span>Welcoming Workplaces</span>
+          <span>Workplaces</span>
           <strong>${explorerState.initiatives.workplaces}</strong>
         </div>
   
         <div class="summaryRow subRow">
-          <span>Welcoming Clubs</span>
+          <span>Clubs</span>
           <strong>${explorerState.initiatives.clubs}</strong>
         </div>
   
         <div class="summaryRow subRow">
-          <span>PALM Alliance LGAs</span>
-          <strong>${explorerState.palmAlliance.members}</strong>
-        </div>
-        
-        <div class="summaryRow subRow">
           <span>Community Organisations</span>
           <strong>${explorerState.initiatives.communityOrganisations}</strong>
         </div>
-        
+  
         <div class="summaryRow">
           <span>Community Hubs</span>
           <strong>${explorerState.initiatives.communityHubs}</strong>
@@ -1751,6 +1894,9 @@ mobileOrgInput.addEventListener("input", () => {
           selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
           selectedLGALayer = null;
         }
+
+        explorerState.selection.lga = null;
+        renderExplorerSummary();
 
         map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
       }
