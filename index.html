@@ -70,28 +70,33 @@
     }
     
     .clearSearch {
-      position: absolute;
-      right: 12px;
-      top: 0;
-      bottom: 0;
-      width: 20px;
-      display: none;        
-      align-items: center;
-      justify-content: center;
-      color: #999;
-      font-size: 18px;
-      cursor: pointer;
-      user-select: none;
-  }
-
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 18px;
+        height: 18px;
+    
+        display: none;
+        align-items: center;
+        justify-content: center;
+    
+        color: #9a9a9a;
+        cursor: pointer;
+    }
+    
     .searchWrapper.hasText .clearSearch {
         display: flex;
     }
-  
-  .clearSearch:hover {
-      color: #444;
-  }
-
+    
+    .clearSearch i {
+        font-size: 15px;
+        line-height: 1;
+    }
+    
+    .clearSearch:hover {
+        color: #555;
+    }
     .legend {
       background-color: white;
       padding: 15px;
@@ -521,12 +526,16 @@
 
     <div class="searchWrapper">
         <input id="lgaSearch" type="text" placeholder="Search council...">
-        <span class="clearSearch" data-target="lgaSearch">×</span>
+        <span class="clearSearch" data-target="lgaSearch">
+          <i class="fa fa-times-circle"></i>
+        </span>
     </div>
     
     <div class="searchWrapper">
         <input id="orgSearch" type="text" placeholder="Search organisation...">
-        <span class="clearSearch" data-target="orgSearch">×</span>
+        <span class="clearSearch" data-target="orgSearch">
+          <i class="fa fa-times-circle"></i>
+        </span>
     </div>
   </div>
 
