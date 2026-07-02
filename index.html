@@ -1710,9 +1710,6 @@ mobileOrgInput.addEventListener("input", () => {
 });
 
   
-})
-.then(() => {
-
   document.querySelectorAll(".clearSearch").forEach(btn => {
 
     const input = document.getElementById(btn.dataset.target);
@@ -1725,37 +1722,31 @@ mobileOrgInput.addEventListener("input", () => {
 
       input.value = "";
       btn.style.display = "none";
-    
+
+      document.querySelectorAll(".searchDropdown").forEach(d => {
+        d.style.display = "none";
+      });
+
+      map.closePopup();
+
       if (input.id === "lgaSearch") {
-        document.querySelectorAll(".searchDropdown").forEach(d => {
-          d.style.display = "none";
-        });
-    
         if (selectedLGALayer) {
-          selectedLGALayer.closePopup();
           selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
           selectedLGALayer = null;
         }
-    
-        map.setView([-25, 134], window.innerWidth <= 600 ? 3 : 5);
+
+        map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
       }
-    
-      if (input.id === "orgSearch") {
-        document.querySelectorAll(".searchDropdown").forEach(d => {
-          d.style.display = "none";
-        });
-      }
-    
+
       if (stateFilter.value !== "ALL") {
         stateFilter.value = "ALL";
         mobileStateFilter.value = "ALL";
         applyStateFilter("ALL");
       }
-    
+
     });
 
   });
-
 })
 
 .catch(error => {
