@@ -1680,23 +1680,33 @@ mobileOrgInput.addEventListener("input", () => {
 
       input.value = "";
       btn.style.display = "none";
-
+    
       if (input.id === "lgaSearch") {
-        dropdown.style.display = "none";
+        document.querySelectorAll(".searchDropdown").forEach(d => {
+          d.style.display = "none";
+        });
+    
+        if (selectedLGALayer) {
+          selectedLGALayer.closePopup();
+          selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+          selectedLGALayer = null;
+        }
+    
+        map.setView([-25, 134], window.innerWidth <= 600 ? 3 : 5);
       }
-
+    
       if (input.id === "orgSearch") {
-        orgDropdown.style.display = "none";
+        document.querySelectorAll(".searchDropdown").forEach(d => {
+          d.style.display = "none";
+        });
       }
-
-      map.setView([-25, 134], window.innerWidth <= 600 ? 3 : 5);
-
+    
       if (stateFilter.value !== "ALL") {
         stateFilter.value = "ALL";
         mobileStateFilter.value = "ALL";
         applyStateFilter("ALL");
       }
-
+    
     });
 
   });
