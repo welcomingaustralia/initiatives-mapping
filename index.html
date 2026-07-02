@@ -108,12 +108,36 @@
       margin: 0 0 18px 0;
       font-size: 20px;
     }
+
+    .explorerBrand {
+         display: flex;
+         align-items: center;
+         gap: 12px;
+         margin-bottom: 18px;
+     }
+      
+     .explorerBrand img {
+        width: 185px;
+         height: auto;
+     }
+      
+    .brandDivider {
+        width: 1px;
+        height: 36px;
+        background: #cfcfcf;
+     }
+      
+    .brandText {
+        font-size: 20px;
+        font-weight: 700;
+        color: #222;
+      }
     
     .panelSection {
       border-top: 1px solid #ddd;
       padding-top: 14px;
       margin-top: 14px;
-    }
+     }
     
     .panelSection h3 {
       margin: 0 0 10px 0;
@@ -444,7 +468,11 @@
 <body>
 
 <div id="desktopExplorerPanel">
-  <h2>Welcoming Australia Explorer</h2>
+  <div class="explorerBrand">
+    <img src="https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/assets/wa-logo.png" alt="Welcoming Australia logo">
+    <span class="brandDivider"></span>
+    <span class="brandText">Explorer</span>
+  </div>
 
   <div class="panelSection">
     <h3>Search</h3>
