@@ -1137,6 +1137,21 @@ Promise.all([
     applyJitterToMarkers(hubCluster);
   });
 
+function smartSearchScore(text, query) {
+  const name = (text || "").toLowerCase().trim();
+
+  const cleanName = name
+    .replace(/^(city of|shire of|rural city of|municipality of|the)\s+/i, "")
+    .trim();
+
+  if (cleanName.startsWith(query)) return 1;
+  if (name.startsWith(query)) return 2;
+  if (cleanName.split(/\s+/).some(word => word.startsWith(query))) return 3;
+  if (name.includes(query)) return 4;
+
+  return 999;
+}
+  
   const orgInput = document.getElementById("orgSearch");
   const allMarkers = [];
 
@@ -1164,16 +1179,24 @@ Promise.all([
       return;
     }
 
-    const matches = allMarkers.filter(marker => {
-      const name = marker.options.title?.toLowerCase() || "";
-      const pc = marker.options.postcode?.toString() || "";
-      const markerState = marker.options.state;
+    const matches = allMarkers
+      .map(marker => {
+        const name = marker.options.title || "";
+        const pc = marker.options.postcode?.toString() || "";
+        const markerState = marker.options.state;
     
-      const matchesSearch = name.includes(q) || pc.includes(q);
-      const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
+        const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
     
-      return matchesSearch && matchesState;
-    });
+        const score = pc.startsWith(q) ? 1 : smartSearchScore(name, q);
+    
+        return { marker, score, matchesState };
+      })
+      .filter(item => item.matchesState && item.score < 999)
+      .sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        return a.marker.options.title.localeCompare(b.marker.options.title);
+      })
+      .map(item => item.marker);
 
     matches.forEach(marker => {
       const item = document.createElement("div");
@@ -1539,29 +1562,13 @@ function updateExplorerState() {
       .map(name => {
         const info = lgaLayers[name];
     
-        const cleanName = name
-          .replace(/^(city of|shire of|rural city of|municipality of|the)\s+/i, "")
-          .trim();
-    
-        const cleanDisplayName = info.displayName
-          .toLowerCase()
-          .replace(/^(city of|shire of|rural city of|municipality of|the)\s+/i, "")
-          .trim();
-    
         const matchesState =
           currentStateFilter === "ALL" || info.state === currentStateFilter;
     
-        let score = 999;
-    
-        if (cleanName.startsWith(q) || cleanDisplayName.startsWith(q)) {
-          score = 1;
-        } else if (name.startsWith(q)) {
-          score = 2;
-        } else if (cleanName.split(/\s+/).some(word => word.startsWith(q))) {
-          score = 3;
-        } else if (name.includes(q)) {
-          score = 4;
-        }
+        const score = Math.min(
+          smartSearchScore(name, q),
+          smartSearchScore(info.displayName, q)
+        );
     
         return { name, score, matchesState };
       })
@@ -1607,13 +1614,26 @@ mobileLgaInput.addEventListener("input", () => {
     return;
   }
 
-  const matches = Object.keys(lgaLayers).filter(name => {
-    const info = lgaLayers[name];
-    const matchesSearch = name.includes(q);
-    const matchesState = currentStateFilter === "ALL" || info.state === currentStateFilter;
-  
-    return matchesSearch && matchesState;
-  });
+  const matches = Object.keys(lgaLayers)
+      .map(name => {
+        const info = lgaLayers[name];
+    
+        const matchesState =
+          currentStateFilter === "ALL" || info.state === currentStateFilter;
+    
+        const score = Math.min(
+          smartSearchScore(name, q),
+          smartSearchScore(info.displayName, q)
+        );
+    
+        return { name, score, matchesState };
+      })
+      .filter(item => item.matchesState && item.score < 999)
+      .sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        return a.name.localeCompare(b.name);
+      })
+      .map(item => item.name);
 
   matches.forEach(nameKey => {
     const info = lgaLayers[nameKey];
@@ -1651,16 +1671,24 @@ mobileOrgInput.addEventListener("input", () => {
     return;
   }
 
-  const matches = allMarkers.filter(marker => {
-    const name = marker.options.title?.toLowerCase() || "";
-    const pc = marker.options.postcode?.toString() || "";
-    const markerState = marker.options.state;
-  
-    const matchesSearch = name.includes(q) || pc.includes(q);
-    const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
-  
-    return matchesSearch && matchesState;
-  });
+  const matches = allMarkers
+      .map(marker => {
+        const name = marker.options.title || "";
+        const pc = marker.options.postcode?.toString() || "";
+        const markerState = marker.options.state;
+    
+        const matchesState = currentStateFilter === "ALL" || markerState === currentStateFilter;
+    
+        const score = pc.startsWith(q) ? 1 : smartSearchScore(name, q);
+    
+        return { marker, score, matchesState };
+      })
+      .filter(item => item.matchesState && item.score < 999)
+      .sort((a, b) => {
+        if (a.score !== b.score) return a.score - b.score;
+        return a.marker.options.title.localeCompare(b.marker.options.title);
+      })
+      .map(item => item.marker);
 
   matches.forEach(marker => {
     const item = document.createElement("div");
