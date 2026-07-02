@@ -71,21 +71,19 @@
     
     .clearSearch {
       position: absolute;
-      right: 8px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      border: none;
-      background: transparent;
       font-size: 18px;
-      line-height: 1;
+      color: #999;
       cursor: pointer;
-      color: #777;
       display: none;
-    }
-    
-    .clearSearch:hover {
-      color: #222;
-    }
+      user-select: none;
+  }
+  
+  .clearSearch:hover {
+      color: #444;
+  }
 
     .legend {
       background-color: white;
@@ -516,12 +514,12 @@
 
     <div class="searchWrapper">
         <input id="lgaSearch" type="text" placeholder="Search council...">
-        <button class="clearSearch" data-target="lgaSearch">×</button>
+        <span class="clearSearch" data-target="lgaSearch">×</span>
     </div>
     
     <div class="searchWrapper">
         <input id="orgSearch" type="text" placeholder="Search organisation...">
-        <button class="clearSearch" data-target="orgSearch">×</button>
+        <span class="clearSearch" data-target="orgSearch">×</span>
     </div>
   </div>
 
@@ -1645,6 +1643,40 @@ mobileOrgInput.addEventListener("input", () => {
 
   
 })
+
+document.querySelectorAll(".clearSearch").forEach(btn => {
+
+  const input = document.getElementById(btn.dataset.target);
+
+  input.addEventListener("input", () => {
+    btn.style.display = input.value ? "block" : "none";
+  });
+
+  btn.addEventListener("click", () => {
+
+    input.value = "";
+    btn.style.display = "none";
+
+    if (input.id === "lgaSearch") {
+      dropdown.style.display = "none";
+    }
+
+    if (input.id === "orgSearch") {
+      orgDropdown.style.display = "none";
+    }
+
+    map.setView([-25, 134], window.innerWidth <= 600 ? 3 : 5);
+
+    if (stateFilter.value !== "ALL") {
+      stateFilter.value = "ALL";
+      mobileStateFilter.value = "ALL";
+      applyStateFilter("ALL");
+    }
+
+  });
+
+});
+
 .catch(error => {
   console.error("Map data failed to load:", error);
 });
