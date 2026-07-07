@@ -1016,6 +1016,162 @@ function refreshLGAStyles() {
     }, 900);
 }
 
+  function buildLGACardHTML(rawName, layer) {
+    const code = layer.feature.properties.LGA_CODE25;
+    const key = normaliseName(rawName);
+    const profile = lgaMasterLookup[code];
+  
+    if (!profile) return "";
+  
+    const counts = initiativeCountsByLGA[key] || {
+      uni: new Set(),
+      workplace: new Set(),
+      club: new Set(),
+      cop: new Set(),
+      hub: new Set()
+    };
+  
+    const isWelcoming =
+      profile.welcoming_city_member?.trim().toUpperCase() === "Y";
+  
+    const isPalm =
+      profile.palm_alliance?.trim().toUpperCase() === "Y";
+  
+    const accreditation = profile.welcoming_city_accreditation?.trim();
+  
+    const initiativeRows = [
+      ["Universities", counts.uni.size],
+      ["Workplaces", counts.workplace.size],
+      ["Clubs", counts.club.size],
+      ["Community Organisations", counts.cop.size]
+    ].filter(row => row[1] > 0);
+  
+    const hasAnyInitiative =
+      isWelcoming ||
+      isPalm ||
+      initiativeRows.length > 0;
+  
+    return `
+      <div class="overviewCard" style="min-width:230px; max-width:260px;">
+        <h4>${publicLGAName(rawName)}</h4>
+  
+        <div class="summaryRow">
+          <span>Welcoming Cities</span>
+          <strong>${isWelcoming ? "Yes" : "No"}</strong>
+        </div>
+  
+        ${
+          accreditation
+            ? `
+              <div class="summaryRow subSubRow">
+                <span>Accreditation</span>
+                <strong>${accreditation}</strong>
+              </div>
+            `
+            : ""
+        }
+  
+        ${
+          isPalm
+            ? `
+              <div class="summaryRow">
+                <span>PALM Alliance</span>
+                <strong>Yes</strong>
+              </div>
+            `
+            : ""
+        }
+  
+        ${
+          initiativeRows.length
+            ? `
+              <div class="summaryRow totalRow">
+                <span>Welcoming initiatives</span>
+                <strong>${initiativeRows.reduce((sum, row) => sum + row[1], 0)}</strong>
+              </div>
+  
+              ${initiativeRows.map(row => `
+                <div class="summaryRow subRow">
+                  <span>${row[0]}</span>
+                  <strong>${row[1]}</strong>
+                </div>
+              `).join("")}
+            `
+            : ""
+        }
+  
+        ${
+          !hasAnyInitiative
+            ? `
+              <div class="summaryRow">
+                <span>
+                  No organisations in this region are currently part of <strong>Welcoming Australia initiatives</strong>.
+                </span>
+              </div>
+            `
+            : ""
+        }
+  
+        ${
+          counts.hub.size > 0
+            ? `
+              <div class="summaryRow">
+                <span>Community Hubs</span>
+                <strong>${counts.hub.size}</strong>
+              </div>
+            `
+            : ""
+        }
+  
+        ${
+          Number(profile.crisp_settled || 0) > 0
+            ? `
+              <div class="summaryRow">
+                <span>CRISP settled</span>
+                <strong>${publicCountText(Number(profile.crisp_settled || 0))}</strong>
+              </div>
+            `
+            : ""
+        }
+  
+        <div class="summaryRow totalRow">
+          <span>Community profile</span>
+          <strong></strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>Born overseas</span>
+          <strong>${profile.overseas_born_pct}%</strong>
+        </div>
+  
+        <div class="summaryRow">
+          <span>Language other than English</span>
+          <strong>${profile.language_other_than_english_pct}%</strong>
+        </div>
+  
+        <div style="text-align:center; margin-top:14px;">
+          <div style="font-size:13px; color:#666; margin-bottom:8px;">
+            Interested in becoming part of the Welcoming network?
+          </div>
+  
+          <a href="https://welcoming.org.au/initiatives"
+             target="_blank"
+             rel="noopener noreferrer"
+             style="
+                display:inline-block;
+                padding:7px 14px;
+                background:#CCA234;
+                color:white;
+                text-decoration:none;
+                border-radius:5px;
+                font-weight:600;
+                font-size:13px;">
+              Learn how to get involved
+          </a>
+        </div>
+      </div>
+    `;
+  }
   function selectLGA(rawName, layer, zoomToLGA = true) {
       if (selectedLGALayer === layer) {
         selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
@@ -1029,8 +1185,16 @@ function refreshLGAStyles() {
       }
     
       highlightLGA(layer);
-      setExplorerLGA(rawName, layer);
-    
+
+      if (window.innerWidth <= 600) {
+        layer.bindPopup(buildLGACardHTML(rawName, layer), {
+          maxWidth: 280,
+          className: "lgaMobilePopup"
+        }).openPopup();
+      } else {
+        setExplorerLGA(rawName, layer);
+      }
+      
       if (zoomToLGA) {
         map.fitBounds(layer.getBounds(), {
           maxZoom: 9,
