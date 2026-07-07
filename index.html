@@ -1190,16 +1190,6 @@ function refreshLGAStyles() {
     `;
   }
   function selectLGA(rawName, layer, zoomToLGA = true) {
-      if (selectedLGALayer === layer) {
-        selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
-        selectedLGALayer = null;
-    
-        explorerState.selection.lga = null;
-        renderExplorerSummary();
-    
-        map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
-        return;
-      }
     
       highlightLGA(layer);
 
