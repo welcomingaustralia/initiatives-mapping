@@ -368,6 +368,34 @@
       margin: 12px 14px;
     }
 
+
+    .panelCTA {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+    }
+    
+    .panelCTAText {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    
+    .panelCTAButton {
+      display: inline-block;
+      padding: 8px 15px;
+      background: #CCA234;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    
+    .panelCTAButton:hover {
+      background: #b88d23;
+    }
     
     @media (max-width: 600px) {
       .leaflet-control-layers {
@@ -639,6 +667,19 @@
   <div class="panelSection" id="desktopSummary">
     <h3>Overview</h3>
     <div id="desktopSummaryContent"></div>
+  
+    <div class="panelCTA">
+      <div class="panelCTAText">
+        Interested in becoming part of the Welcoming network?
+      </div>
+  
+      <a href="https://welcoming.org.au/initiatives"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="panelCTAButton">
+        Learn how to get involved
+      </a>
+    </div>
   </div>
 </div>
 
@@ -1976,27 +2017,6 @@ function setExplorerLGA(rawName, layer) {
           <div class="summaryRow">
             <span>Language other than English</span>
             <strong>${profile.language_other_than_english_pct}%</strong>
-          </div>
-
-          <div style="text-align:center; margin-top:16px;">
-            <div style="font-size:13px; color:#666; margin-bottom:8px;">
-              Interested in becoming part of the Welcoming network?
-            </div>
-          
-            <a href="https://welcoming.org.au/initiatives"
-               target="_blank"
-               rel="noopener noreferrer"
-               style="
-                  display:inline-block;
-                  padding:7px 14px;
-                  background:#CCA234;
-                  color:white;
-                  text-decoration:none;
-                  border-radius:5px;
-                  font-weight:600;
-                  font-size:13px;">
-                Learn how to get involved
-            </a>
           </div>
         </div>
       `;
