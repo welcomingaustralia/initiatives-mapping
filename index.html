@@ -659,13 +659,83 @@
   </div>
 
   <div class="mobileMenuSection">
-    <h4>Show initiatives</h4>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="uni" checked> Welcoming Universities</label>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="workplace" checked> Welcoming Workplaces</label>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="club" checked> Welcoming Clubs</label>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="cop" checked> Community Organisations</label>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="hub" checked> Community Hubs</label>
-    <label><input type="checkbox" class="mobileLayerToggle" data-layer="crisp" checked> CRISP Settlements</label>
+    <h4>Map Layers & Legend</h4>
+  
+    <div class="overviewCard layerCard">
+      <div class="layerRow">
+        <span><span class="legendSwatch welcomingCitySwatch"></span> Welcoming Cities</span>
+        <label class="switch">
+          <input type="checkbox" id="mobileToggleWelcomingCities" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendSwatch palmSwatch"></span> PALM Mayoral Alliance</span>
+        <label class="switch">
+          <input type="checkbox" id="mobileTogglePalmAlliance" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot uniDot"></span> Welcoming Universities</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="uni" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot workplaceDot"></span> Welcoming Workplaces</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="workplace" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot clubDot"></span> Welcoming Clubs</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="club" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot copDot"></span> Community Organisations</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="cop" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot hubDot"></span> Community Hubs</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="hub" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div class="layerRow">
+        <span><span class="legendDot crispDot"></span> CRISP Settlements</span>
+        <label class="switch">
+          <input type="checkbox" class="mobileLayerToggle" data-layer="crisp" checked>
+          <span></span>
+        </label>
+      </div>
+  
+      <div style="border-top:1px solid #ddd; margin:10px 0 8px 0;"></div>
+  
+      <div class="layerRow">
+        <span>Show Accredited Only</span>
+        <label class="switch">
+          <input type="checkbox" id="mobileToggleAccreditedOnly">
+          <span></span>
+        </label>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1352,16 +1422,37 @@ function smartSearchScore(text, query) {
 
   document.getElementById("toggleWelcomingCities").addEventListener("change", e => {
     showWelcomingCities = e.target.checked;
+    document.getElementById("mobileToggleWelcomingCities").checked = e.target.checked;
     refreshLGAStyles();
   });
   
   document.getElementById("togglePalmAlliance").addEventListener("change", e => {
     showPalmAlliance = e.target.checked;
+    document.getElementById("mobileTogglePalmAlliance").checked = e.target.checked;
     refreshLGAStyles();
   });
-
+  
   document.getElementById("toggleAccreditedOnly").addEventListener("change", e => {
     showAccreditedOnly = e.target.checked;
+    document.getElementById("mobileToggleAccreditedOnly").checked = e.target.checked;
+    refreshAccreditedFilter();
+  });
+
+  document.getElementById("mobileToggleWelcomingCities").addEventListener("change", e => {
+    showWelcomingCities = e.target.checked;
+    document.getElementById("toggleWelcomingCities").checked = e.target.checked;
+    refreshLGAStyles();
+  });
+  
+  document.getElementById("mobileTogglePalmAlliance").addEventListener("change", e => {
+    showPalmAlliance = e.target.checked;
+    document.getElementById("togglePalmAlliance").checked = e.target.checked;
+    refreshLGAStyles();
+  });
+  
+  document.getElementById("mobileToggleAccreditedOnly").addEventListener("change", e => {
+    showAccreditedOnly = e.target.checked;
+    document.getElementById("toggleAccreditedOnly").checked = e.target.checked;
     refreshAccreditedFilter();
   });
 
