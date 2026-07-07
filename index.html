@@ -898,6 +898,11 @@ function refreshLGAStyles() {
   
       group.addLayer(marker);
     });
+    if (showAccreditedOnly) {
+      map.removeLayer(crispLayer);
+    } else {
+      map.addLayer(crispLayer);
+    }
   }
   
   function highlightLGA(layer) {
