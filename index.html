@@ -993,20 +993,30 @@ function refreshLGAStyles() {
   }
   
   function highlightLGA(layer) {
-    if (selectedLGALayer) {
-      selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+      if (selectedLGALayer && selectedLGALayer !== layer) {
+        selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+      }
+    
+      selectedLGALayer = layer;
+    
+      layer.setStyle({
+        color: "#ffffff",
+        weight: 5,
+        fillOpacity: 0.75
+      });
+    
+      setTimeout(() => {
+        if (selectedLGALayer !== layer) return;
+    
+        layer.setStyle({
+          color: "#333333",
+          weight: 4,
+          fillOpacity: 0.70
+        });
+    
+        layer.bringToBack();
+      }, 350);
     }
-
-    selectedLGALayer = layer;
-
-    layer.setStyle({
-      color: "#666666",
-      weight: 3,
-      fillOpacity: 0.65
-    });
-
-    layer.bringToBack();
-  }
 
   function flashLGA(layer) {
     if (selectedLGALayer && selectedLGALayer !== layer) {
