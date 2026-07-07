@@ -1203,10 +1203,12 @@ function refreshLGAStyles() {
       }
       
       if (zoomToLGA) {
-        map.fitBounds(layer.getBounds(), {
+        map.flyToBounds(layer.getBounds(), {
           maxZoom: 9,
           paddingTopLeft: [20, 150],
-          paddingBottomRight: [20, 80]
+          paddingBottomRight: [20, 80],
+          duration: 0.8,
+          easeLinearity: 0.25
         });
       }
     }
@@ -1254,7 +1256,10 @@ function refreshLGAStyles() {
       explorerState.selection.lga = null;
       renderExplorerSummary();
     
-      map.setView([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5);
+      map.flyTo([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5, {
+        duration: 0.8,
+        easeLinearity: 0.25
+      });
     });
 
   const circleColorMap = {
