@@ -535,12 +535,18 @@
   <div class="overviewCard layerCard">
     <div class="layerRow">
       <span><span class="legendSwatch welcomingCitySwatch"></span> Welcoming Cities</span>
-      <strong></strong>
+      <label class="switch">
+        <input type="checkbox" id="toggleWelcomingCities" checked>
+        <span></span>
+      </label>
     </div>
 
     <div class="layerRow">
       <span><span class="legendSwatch palmSwatch"></span> PALM Mayoral Alliance</span>
-      <strong></strong>
+      <label class="switch">
+        <input type="checkbox" id="togglePalmAlliance" checked>
+        <span></span>
+      </label>
     </div>
 
     <div class="layerRow">
@@ -734,6 +740,8 @@ const lgaCentres = {};
 const stateBounds = {};
 let selectedLGALayer = null;
 let currentStateFilter = "ALL";
+let showWelcomingCities = true;
+let showPalmAlliance = true;
 const lgaMasterLookup = {};
 const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
@@ -792,8 +800,13 @@ Promise.all([
     const code = feature.properties.LGA_CODE25;
     const profile = lgaMasterLookup[code];
   
-    const isWelcoming = profile?.welcoming_city_member?.trim().toUpperCase() === "Y";
-    const isPalm = profile?.palm_alliance?.trim().toUpperCase() === "Y";
+    const isWelcoming =
+      showWelcomingCities &&
+      profile?.welcoming_city_member?.trim().toUpperCase() === "Y";
+    
+    const isPalm =
+      showPalmAlliance &&
+      profile?.palm_alliance?.trim().toUpperCase() === "Y";
   
     let style = isWelcoming
       ? { fillColor: "#CCA234", color: "#CCA234", weight: 1, fillOpacity: 0.50 }
@@ -808,6 +821,20 @@ Promise.all([
     return style;
   }
 
+function refreshLGAStyles() {
+  Object.values(lgaLayers).forEach(info => {
+    info.layer.setStyle(lgaStyle(info.layer.feature));
+  });
+
+  if (selectedLGALayer) {
+    selectedLGALayer.setStyle({
+      color: "#666666",
+      weight: 3,
+      fillOpacity: 0.65
+    });
+  }
+}
+  
   function highlightLGA(layer) {
     if (selectedLGALayer) {
       selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
@@ -1247,6 +1274,16 @@ function smartSearchScore(text, query) {
         map.removeLayer(layer);
       }
     });
+  });
+
+  document.getElementById("toggleWelcomingCities").addEventListener("change", e => {
+    showWelcomingCities = e.target.checked;
+    refreshLGAStyles();
+  });
+  
+  document.getElementById("togglePalmAlliance").addEventListener("change", e => {
+    showPalmAlliance = e.target.checked;
+    refreshLGAStyles();
   });
 
   function applyStateFilter(selectedState) {
