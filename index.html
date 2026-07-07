@@ -1089,9 +1089,12 @@ function refreshLGAStyles() {
     });
 
     marker.bindPopup(`
-      <b>${r.name}</b><br>
-      ${r.address || ""}<br>
-      ${r.postcode || ""}
+      <b>${r.name}</b>
+      ${
+        accreditationLevel
+          ? `<br>Accreditation: ${accreditationLevel}`
+          : ""
+      }
     `);
 
     if (type === "uni")       uniCluster.addLayer(marker);
