@@ -351,6 +351,23 @@
     .hubDot { background:#02006C; }
     .crispDot { background:#d98ca3; }
 
+    .lgaPopupContent {
+      min-width: 230px;
+      max-width: 260px;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    
+    .lgaPopupContent h4 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+    }
+    
+    .lgaMobilePopup .leaflet-popup-content {
+      margin: 12px 14px;
+    }
+
     
     @media (max-width: 600px) {
       .leaflet-control-layers {
@@ -1052,7 +1069,7 @@ function refreshLGAStyles() {
       initiativeRows.length > 0;
   
     return `
-      <div class="overviewCard" style="min-width:230px; max-width:260px;">
+      <div class="lgaPopupContent">
         <h4>${publicLGAName(rawName)}</h4>
   
         <div class="summaryRow">
