@@ -606,6 +606,16 @@
         <span></span>
       </label>
     </div>
+
+    <div style="border-top:1px solid #ddd; margin:10px 0 8px 0;"></div>
+
+    <div class="layerRow">
+      <span>Show Accredited Only</span>
+      <label class="switch">
+        <input type="checkbox" id="toggleAccreditedOnly">
+        <span></span>
+      </label>
+    </div>
   </div>
 </div>
   
@@ -752,6 +762,7 @@ let selectedLGALayer = null;
 let currentStateFilter = "ALL";
 let showWelcomingCities = true;
 let showPalmAlliance = true;
+let showAccreditedOnly = false;
 const lgaMasterLookup = {};
 const initiativeCountsByLGA = {};
 const accreditedOrgsByLGA = {};
@@ -809,6 +820,17 @@ Promise.all([
   function lgaStyle(feature) {
     const code = feature.properties.LGA_CODE25;
     const profile = lgaMasterLookup[code];
+    const hasCityAccreditation =
+      !!profile?.welcoming_city_accreditation?.trim();
+    
+    if (showAccreditedOnly && !hasCityAccreditation) {
+      return {
+        fillColor: "#f2f2f2",
+        color: "#ddd",
+        weight: 0.3,
+        fillOpacity: 0.05
+      };
+    }
   
     const isWelcoming =
       showWelcomingCities &&
@@ -844,6 +866,39 @@ function refreshLGAStyles() {
     });
   }
 }
+
+  function refreshAccreditedFilter() {
+    refreshLGAStyles();
+  
+    const groups = {
+      uni: uniCluster,
+      workplace: workplaceCluster,
+      club: clubCluster,
+      cop: copCluster,
+      hub: hubCluster
+    };
+  
+    Object.values(groups).forEach(group => group.clearLayers());
+  
+    initiativeMarkers.forEach(marker => {
+      const markerState = marker.options.state;
+      const markerType = marker.options.type;
+      const group = groups[markerType];
+  
+      if (!group) return;
+  
+      const matchesState =
+        currentStateFilter === "ALL" || markerState === currentStateFilter;
+  
+      const isAccredited =
+        !!marker.options.accreditationLevel?.trim();
+  
+      if (!matchesState) return;
+      if (showAccreditedOnly && !isAccredited) return;
+  
+      group.addLayer(marker);
+    });
+  }
   
   function highlightLGA(layer) {
     if (selectedLGALayer) {
@@ -1018,7 +1073,8 @@ function refreshLGAStyles() {
       postcode: r.postcode,
       state: (r.state || "").trim().toUpperCase(),
       type: type,
-      institutionId: institutionId
+      institutionId: institutionId,
+      accreditationLevel: accreditationLevel
     });
 
     marker.bindTooltip(r.name, {
@@ -1296,6 +1352,11 @@ function smartSearchScore(text, query) {
     refreshLGAStyles();
   });
 
+  document.getElementById("toggleAccreditedOnly").addEventListener("change", e => {
+    showAccreditedOnly = e.target.checked;
+    refreshAccreditedFilter();
+  });
+
   function applyStateFilter(selectedState) {
     currentStateFilter = selectedState;
     
@@ -1338,6 +1399,9 @@ function smartSearchScore(text, query) {
         padding: [20, 20],
         maxZoom: 7
       });
+    }
+    if (showAccreditedOnly) {
+      refreshAccreditedFilter();
     }
     updateExplorerState();
   }
