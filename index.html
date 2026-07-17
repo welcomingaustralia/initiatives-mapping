@@ -2527,15 +2527,19 @@ function setExplorerLGA(rawName, layer) {
     profile,
     counts
   };
-  
+
   const summaryExport =
     document.getElementById("summaryExport");
-  
+
   if (summaryExport) {
     summaryExport.style.display = "block";
   }
-  
+
   renderExplorerSummary();
+} 
+
+
+function renderExplorerSummary() {
 
   
   function renderExplorerSummary() {
