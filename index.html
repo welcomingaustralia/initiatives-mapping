@@ -3,7 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcoming Map - Working Copy</title>
+  <meta property="og:title" content="Welcoming Australia Explorer">
+  <meta property="og:description" content="Explore Welcoming Australia Initiatives across Australia.">
+  <meta property="og:image" content="https://welcomingaustralia.github.io/welcoming-map/preview-image.png">
+  <meta property="og:url" content="https://welcomingaustralia.github.io/welcoming-map/">
+  <meta property="og:type" content="website">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Welcoming Australia Explorer">
+  <meta name="twitter:description" content="Explore Welcoming Australia initiatives across Australia.">
+  <meta name="twitter:image" content="https://welcomingaustralia.github.io/welcoming-map/preview-image.png">
+  <title>Welcoming Australia Explorer</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -185,6 +195,15 @@
       background: white;
       color: black;
     }
+
+    .layerSectionHeading {
+      margin: 6px 0 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #777;
+    }
     
     #stateFilter,
     #lgaSearch {
@@ -284,6 +303,27 @@
       border: 1px solid #ddd;
       border-radius: 8px;
       padding: 10px 12px;
+    }
+
+    @keyframes overviewCardFlash {
+      0% {
+        background-color: #f7f7f7;
+        border-color: #ddd;
+      }
+    
+      35% {
+        background-color: #fff4cf;
+        border-color: #CCA234;
+      }
+    
+      100% {
+        background-color: #f7f7f7;
+        border-color: #ddd;
+      }
+    }
+    
+    .overviewCard.flashUpdate {
+      animation: overviewCardFlash 0.9s ease-out;
     }
     
     .overviewCard h4 {
@@ -396,6 +436,58 @@
     .panelCTAButton:hover {
       background: #b88d23;
     }
+
+    .panelFeedback {
+      margin-top: 22px;
+      text-align: center;
+    }
+    
+    .panelFeedbackText {
+      font-size: 11px;
+      color: #777;
+      line-height: 1.5;
+    }
+    
+    .panelFeedbackText a {
+      color: #CCA234;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    
+    .panelFeedbackText a:hover {
+      text-decoration: underline;
+    }
+
+    .panelReset {
+      margin-top: 12px;
+      text-align: center;
+    }
+    
+    .resetMapButton {
+      display: inline-block;
+    
+      padding: 7px 14px;
+    
+      background: white;
+      color: #666;
+    
+      border: 1px solid #d0d0d0;
+      border-radius: 5px;
+    
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+    
+      cursor: pointer;
+      transition: all .15s;
+    }
+    
+    .resetMapButton:hover {
+      background: #f6f6f6;
+      border-color: #b5b5b5;
+    }
+
+
     
     @media (max-width: 600px) {
       .leaflet-control-layers {
@@ -588,6 +680,10 @@
   <h3>Map Layers & Legend</h3>
 
   <div class="overviewCard layerCard">
+    <div class="layerSectionHeading">
+      Welcoming Australia Initiatives
+    </div>
+    
     <div class="layerRow">
       <span><span class="legendSwatch welcomingCitySwatch"></span> Welcoming Cities</span>
       <label class="switch">
@@ -636,10 +732,14 @@
       </label>
     </div>
 
+    <div class="layerSectionHeading">
+      Additional layers
+    </div>
+
     <div class="layerRow">
       <span><span class="legendDot hubDot"></span> Community Hubs</span>
       <label class="switch">
-        <input type="checkbox" class="desktopLayerToggle" data-layer="hub" checked>
+        <input type="checkbox" class="desktopLayerToggle" data-layer="hub">
         <span></span>
       </label>
     </div>
@@ -647,7 +747,7 @@
     <div class="layerRow">
       <span><span class="legendDot crispDot"></span> CRISP Settlements</span>
       <label class="switch">
-        <input type="checkbox" class="desktopLayerToggle" data-layer="crisp" checked>
+        <input type="checkbox" class="desktopLayerToggle" data-layer="crisp">
         <span></span>
       </label>
     </div>
@@ -661,7 +761,13 @@
         <span></span>
       </label>
     </div>
-  </div>
+    </div>
+    
+    <div class="panelReset">
+      <button id="resetMapButton" class="resetMapButton">
+        Reset filters & map
+      </button>
+    </div>
 </div>
   
   <div class="panelSection" id="desktopSummary">
@@ -679,6 +785,17 @@
          class="panelCTAButton">
         Learn how to get involved
       </a>
+    </div>
+
+    <div class="panelFeedback">
+      <div class="panelFeedbackText">
+        Need to update information about your organisation?<br>
+        <a href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=e6hleTFTo0e3b5Gtt7nU5EZ6ScBX2pBCobzR4ccDa9pUMkhJUlVWVE9KTTBDQjFVRk02V1FKQ0pHUC4u"
+           target="_blank"
+           rel="noopener noreferrer">
+          Submit an update here.
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -720,6 +837,10 @@
     <h4>Map Layers & Legend</h4>
   
     <div class="overviewCard layerCard">
+
+      <div class="layerSectionHeading">
+        Welcoming Australia Initiatives
+      </div>
       <div class="layerRow">
         <span><span class="legendSwatch welcomingCitySwatch"></span> Welcoming Cities</span>
         <label class="switch">
@@ -767,11 +888,15 @@
           <span></span>
         </label>
       </div>
+
+      <div class="layerSectionHeading">
+        Additional layers
+      </div>
   
       <div class="layerRow">
         <span><span class="legendDot hubDot"></span> Community Hubs</span>
         <label class="switch">
-          <input type="checkbox" class="mobileLayerToggle" data-layer="hub" checked>
+          <input type="checkbox" class="mobileLayerToggle" data-layer="hub">
           <span></span>
         </label>
       </div>
@@ -779,23 +904,36 @@
       <div class="layerRow">
         <span><span class="legendDot crispDot"></span> CRISP Settlements</span>
         <label class="switch">
-          <input type="checkbox" class="mobileLayerToggle" data-layer="crisp" checked>
+          <input type="checkbox" class="mobileLayerToggle" data-layer="crisp">
           <span></span>
         </label>
       </div>
   
       <div style="border-top:1px solid #ddd; margin:10px 0 8px 0;"></div>
   
-      <div class="layerRow">
-        <span>Show Accredited Only</span>
-        <label class="switch">
-          <input type="checkbox" id="mobileToggleAccreditedOnly">
-          <span></span>
-        </label>
+            <div class="layerRow">
+              <span>Show Accredited Only</span>
+              <label class="switch">
+                <input type="checkbox" id="mobileToggleAccreditedOnly">
+                <span></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      
+        <div class="panelFeedback">
+          <div class="panelFeedbackText">
+            Notice something that needs updating?<br>
+            If information about your organisation has changed,
+            <a href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=e6hleTFTo0e3b5Gtt7nU5EZ6ScBX2pBCobzR4ccDa9pUMkhJUlVWVE9KTTBDQjFVRk02V1FKQ0pHUC4u"
+               target="_blank"
+               rel="noopener noreferrer">
+              submit an update here.
+            </a>
+          </div>
+        </div>
+      
       </div>
-    </div>
-  </div>
-</div>
 
 <div id="map"></div>
 
@@ -1373,6 +1511,7 @@ function refreshLGAStyles() {
       weight: 2,
       title: r.name,
       postcode: r.postcode,
+      lga: (r.lga_name || "").trim(),
       state: (r.state || "").trim().toUpperCase(),
       type: type,
       institutionId: institutionId,
@@ -1445,8 +1584,8 @@ function refreshLGAStyles() {
   workplaceCluster.addTo(map);
   clubCluster.addTo(map);
   copCluster.addTo(map);
-  hubCluster.addTo(map);
-  crispLayer.addTo(map);
+  //hubCluster.addTo(map);
+  //crispLayer.addTo(map);
 
   function applyJitterToMarkers(clusterGroup) {
     clusterGroup.eachLayer(marker => {
@@ -1539,7 +1678,7 @@ function smartSearchScore(text, query) {
 
     matches.forEach(marker => {
       const item = document.createElement("div");
-      item.innerText = `${marker.options.title} (${marker.options.postcode || ""})`;
+      item.innerText = `${marker.options.title} (${marker.options.lga || ""})`;
 
       item.onclick = () => {
         orgInput.value = marker.options.title;
@@ -1682,7 +1821,78 @@ function smartSearchScore(text, query) {
     document.getElementById("toggleAccreditedOnly").checked = e.target.checked;
     refreshAccreditedFilter();
   });
+  
+  document.getElementById("resetMapButton").addEventListener("click", resetMap);
 
+
+  function resetMap() {
+    document.getElementById("lgaSearch").value = "";
+    document.getElementById("orgSearch").value = "";
+    document.getElementById("mobileLgaSearch").value = "";
+    document.getElementById("mobileOrgSearch").value = "";
+  
+    document.querySelectorAll(".clearSearch").forEach(btn => {
+      btn.style.display = "none";
+    });
+  
+    document.querySelectorAll(".searchDropdown").forEach(d => {
+      d.style.display = "none";
+    });
+  
+    document.querySelectorAll(".mobileDropdown").forEach(d => {
+      d.style.display = "none";
+    });
+  
+    stateFilter.value = "ALL";
+    mobileStateFilter.value = "ALL";
+    currentStateFilter = "ALL";
+  
+    map.closePopup();
+  
+    if (selectedLGALayer) {
+      selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
+      selectedLGALayer = null;
+    }
+  
+    explorerState.selection.lga = null;
+  
+    showWelcomingCities = true;
+    showPalmAlliance = true;
+    showAccreditedOnly = false;
+  
+    document.getElementById("toggleWelcomingCities").checked = true;
+    document.getElementById("togglePalmAlliance").checked = true;
+    document.getElementById("toggleAccreditedOnly").checked = false;
+  
+    document.getElementById("mobileToggleWelcomingCities").checked = true;
+    document.getElementById("mobileTogglePalmAlliance").checked = true;
+    document.getElementById("mobileToggleAccreditedOnly").checked = false;
+  
+    document.querySelectorAll(".desktopLayerToggle").forEach(cb => {
+      cb.checked = !["hub", "crisp"].includes(cb.dataset.layer);
+    });
+    
+    document.querySelectorAll(".mobileLayerToggle").forEach(cb => {
+      cb.checked = !["hub", "crisp"].includes(cb.dataset.layer);
+    });
+  
+    Object.entries(mobileLayerMap).forEach(([key, layer]) => {
+      if (["hub", "crisp"].includes(key)) {
+        map.removeLayer(layer);
+      } else if (!map.hasLayer(layer)) {
+        map.addLayer(layer);
+      }
+    });
+  
+    refreshAccreditedFilter();
+    updateExplorerState();
+  
+    map.flyTo([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5, {
+      duration: 0.8,
+      easeLinearity: 0.25
+    });
+  }
+  
   function applyStateFilter(selectedState) {
     currentStateFilter = selectedState;
     
@@ -1856,6 +2066,20 @@ function updateExplorerState() {
   renderExplorerSummary();
 }
 
+function flashOverviewCard() {
+  const card = document.querySelector(
+    "#desktopSummaryContent .overviewCard"
+  );
+
+  if (!card) return;
+
+  card.classList.remove("flashUpdate");
+
+  void card.offsetWidth;
+
+  card.classList.add("flashUpdate");
+}
+  
 function setExplorerLGA(rawName, layer) {
   const code = layer.feature.properties.LGA_CODE25;
   const key = normaliseName(rawName);
@@ -2020,7 +2244,8 @@ function setExplorerLGA(rawName, layer) {
           </div>
         </div>
       `;
-  
+
+      flashOverviewCard();
       return;
     }
   
@@ -2083,7 +2308,9 @@ function setExplorerLGA(rawName, layer) {
         </div>
       </div>
     `;
+    flashOverviewCard();
   }
+
   updateExplorerState();
 
 
@@ -2243,7 +2470,7 @@ mobileOrgInput.addEventListener("input", () => {
 
   matches.forEach(marker => {
     const item = document.createElement("div");
-    item.innerText = `${marker.options.title} (${marker.options.postcode || ""})`;
+    item.innerText = `${marker.options.title} (${marker.options.lga || ""})`;
 
     item.onclick = () => {
       mobileOrgInput.value = marker.options.title;
