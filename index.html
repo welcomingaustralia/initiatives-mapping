@@ -2328,7 +2328,24 @@ function exportLGASummary() {
 
     y += 6;
   }
-
+  
+  function addParagraph(text) {
+    const lines = doc.splitTextToSize(
+      cleanPDFText(text),
+      contentWidth
+    );
+  
+    addPageIfNeeded(lines.length * 4.5 + 4);
+  
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(90);
+  
+    doc.text(lines, leftMargin, y);
+  
+    y += lines.length * 4.5 + 5;
+  }
+  
   function addOrganisationSection(title, items) {
     if (!items.length) return;
 
@@ -2434,6 +2451,10 @@ function exportLGASummary() {
     coreOrganisationCount
   );
 
+  addParagraph(
+  "The organisations listed below are involved in one or more Welcoming Australia initiatives or networks. Their inclusion shows how they are engaging with this work in the selected LGA."
+);
+
   // Organisation lists
   addOrganisationSection(
     "Welcoming Universities",
@@ -2458,6 +2479,9 @@ function exportLGASummary() {
   // Additional information
   if (groups.hub.length || crispSettled > 0) {
     addSectionHeading("Additional information");
+    addParagraph(
+  "Community Hubs and CRISP are included as connected initiatives within the broader welcoming ecosystem. They are shown to provide a fuller picture of local activity and community connections."
+);
 
     if (groups.hub.length) {
       addKeyValue(
