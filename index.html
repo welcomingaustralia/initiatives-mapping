@@ -1410,6 +1410,21 @@ function refreshLGAStyles() {
       profile.palm_alliance?.trim().toUpperCase() === "Y";
   
     const accreditation = profile.welcoming_city_accreditation?.trim();
+
+    const accreditedOrganisations =
+      accreditedOrgsByLGA[key] || new Map();
+    
+    const accreditedCounts = {
+      uni: 0,
+      workplace: 0,
+      club: 0
+    };
+    
+    accreditedOrganisations.forEach(org => {
+      if (accreditedCounts[org.type] !== undefined) {
+        accreditedCounts[org.type]++;
+      }
+    });
   
     const initiativeRows = [
       ["Universities", counts.uni.size],
@@ -1471,12 +1486,35 @@ function refreshLGAStyles() {
         : ""
     }
     
-    ${initiativeRows.map(row => `
-      <div class="summaryRow subRow">
-        <span>${row[0]}</span>
-        <strong>${row[1]}</strong>
-      </div>
-    `).join("")}
+    ${initiativeRows.map(row => {
+      const typeMap = {
+        "Universities": "uni",
+        "Workplaces": "workplace",
+        "Clubs": "club",
+        "Community Organisations": "cop"
+      };
+    
+      const type = typeMap[row[0]];
+      const accreditedCount = accreditedCounts[type] || 0;
+    
+      return `
+        <div class="summaryRow subRow">
+          <span>${row[0]}</span>
+          <strong>${row[1]}</strong>
+        </div>
+    
+        ${
+          accreditedCount > 0
+            ? `
+              <div class="summaryRow subSubRow">
+                <span>Accredited</span>
+                <strong>${accreditedCount}</strong>
+              </div>
+            `
+            : ""
+        }
+      `;
+    }).join("")}
 
 
         ${
@@ -1664,6 +1702,7 @@ function refreshLGAStyles() {
 
         accreditedOrgsByLGA[lgaKey].set(institutionId, {
           name: r.name,
+          type: type,
           level: accreditationLevel
         });
       }
@@ -2752,6 +2791,23 @@ function setExplorerLGA(rawName, layer) {
         profile.palm_alliance?.trim().toUpperCase() === "Y";
   
       const accreditation = profile.welcoming_city_accreditation?.trim();
+
+      const lgaKey = normaliseName(lga.name);
+
+      const accreditedOrganisations =
+        accreditedOrgsByLGA[lgaKey] || new Map();
+      
+      const accreditedCounts = {
+        uni: 0,
+        workplace: 0,
+        club: 0
+      };
+      
+      accreditedOrganisations.forEach(org => {
+        if (accreditedCounts[org.type] !== undefined) {
+          accreditedCounts[org.type]++;
+        }
+      });
   
       const initiativeRows = [
         ["Universities", counts.uni.size],
@@ -2813,12 +2869,35 @@ ${
     : ""
 }
 
-${initiativeRows.map(row => `
-  <div class="summaryRow subRow">
-    <span>${row[0]}</span>
-    <strong>${row[1]}</strong>
-  </div>
-`).join("")}
+${initiativeRows.map(row => {
+  const typeMap = {
+    "Universities": "uni",
+    "Workplaces": "workplace",
+    "Clubs": "club",
+    "Community Organisations": "cop"
+  };
+
+  const type = typeMap[row[0]];
+  const accreditedCount = accreditedCounts[type] || 0;
+
+  return `
+    <div class="summaryRow subRow">
+      <span>${row[0]}</span>
+      <strong>${row[1]}</strong>
+    </div>
+
+    ${
+      accreditedCount > 0
+        ? `
+          <div class="summaryRow subSubRow">
+            <span>Accredited</span>
+            <strong>${accreditedCount}</strong>
+          </div>
+        `
+        : ""
+    }
+  `;
+}).join("")}
   
           ${
             !hasAnyInitiative
