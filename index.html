@@ -1052,7 +1052,22 @@
             </div>
           </div>
         </div>
-      
+
+  <div class="panelCTA">
+      <div class="panelCTAText">
+        Interested in becoming part of the Welcoming network?
+      </div>
+    
+      <a href="https://welcoming.org.au/initiatives"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="panelCTAButton">
+        Learn how to get involved
+      </a>
+    </div>
+
+
+  
         <div class="panelFeedback">
           <div class="panelFeedbackText">
             Notice something that needs updating?<br>
@@ -1071,13 +1086,13 @@
 
 <script>
 const GEOJSON_URL =
-  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/LGA_2025_AUST_GDA2020.min.json";
+  "https://raw.githubusercontent.com/welcomingaustralia/welcoming-map/main/LGA_2025_AUST_GDA2020.min.json";
 
 const POINTS_URL =
   "https://raw.githubusercontent.com/welcomingaustralia/welcoming-map/main/welcoming_points_centroids.csv";
 
 const LGA_MASTER_URL =
-  "https://raw.githubusercontent.com/welcomingaustralia/initiatives-mapping/main/lga_master.csv";
+  "https://raw.githubusercontent.com/welcomingaustralia/welcoming-map/main/lga_master.csv";
 
 const initialZoom = window.innerWidth <= 600 ? 3 : 5;
 const map = L.map("map").setView([-25.0, 134.0], initialZoom);
@@ -1407,51 +1422,58 @@ function refreshLGAStyles() {
       <div class="lgaPopupContent">
         <h4>${publicLGAName(rawName)}</h4>
   
-        <div class="summaryRow">
-          <span>Welcoming Cities</span>
-          <strong>${isWelcoming ? "Yes" : "No"}</strong>
-        </div>
-  
         ${
-          accreditation
-            ? `
-              <div class="summaryRow subSubRow">
-                <span>Accreditation</span>
-                <strong>${accreditation}</strong>
-              </div>
-            `
-            : ""
-        }
-  
-        ${
-          isPalm
-            ? `
-              <div class="summaryRow">
-                <span>PALM Alliance</span>
-                <strong>Yes</strong>
-              </div>
-            `
-            : ""
-        }
-  
-        ${
-          initiativeRows.length
-            ? `
-              <div class="summaryRow totalRow">
-                <span>Welcoming initiatives</span>
-                <strong>${initiativeRows.reduce((sum, row) => sum + row[1], 0)}</strong>
-              </div>
-  
-              ${initiativeRows.map(row => `
-                <div class="summaryRow subRow">
-                  <span>${row[0]}</span>
-                  <strong>${row[1]}</strong>
-                </div>
-              `).join("")}
-            `
-            : ""
-        }
-  
+  hasAnyInitiative
+    ? `
+      <div class="summaryRow totalRow">
+        <span>Welcoming initiatives</span>
+        <strong>
+          ${
+            initiativeRows.reduce((sum, row) => sum + row[1], 0) +
+            (isWelcoming ? 1 : 0) +
+            (isPalm ? 1 : 0)
+          }
+        </strong>
+      </div>
+    `
+    : ""
+}
+
+<div class="summaryRow subRow">
+  <span>Welcoming Cities</span>
+  <strong>${isWelcoming ? "Yes" : "No"}</strong>
+</div>
+
+    ${
+      accreditation
+        ? `
+          <div class="summaryRow subSubRow">
+            <span>Accreditation</span>
+            <strong>${accreditation}</strong>
+          </div>
+        `
+        : ""
+    }
+    
+    ${
+      isPalm
+        ? `
+          <div class="summaryRow subRow">
+            <span>PALM Alliance</span>
+            <strong>Yes</strong>
+          </div>
+        `
+        : ""
+    }
+    
+    ${initiativeRows.map(row => `
+      <div class="summaryRow subRow">
+        <span>${row[0]}</span>
+        <strong>${row[1]}</strong>
+      </div>
+    `).join("")}
+
+
         ${
           !hasAnyInitiative
             ? `
@@ -1490,6 +1512,11 @@ function refreshLGAStyles() {
           <span>Community profile</span>
           <strong></strong>
         </div>
+
+        <div class="summaryRow">
+          <span>Population</span>
+          <strong>${Number(profile.population).toLocaleString("en-AU")}</strong>
+        </div>
   
         <div class="summaryRow">
           <span>Born overseas</span>
@@ -1499,27 +1526,6 @@ function refreshLGAStyles() {
         <div class="summaryRow">
           <span>Language other than English</span>
           <strong>${profile.language_other_than_english_pct}%</strong>
-        </div>
-  
-        <div style="text-align:center; margin-top:14px;">
-          <div style="font-size:13px; color:#666; margin-bottom:8px;">
-            Interested in becoming part of the Welcoming network?
-          </div>
-  
-          <a href="https://welcoming.org.au/initiatives"
-             target="_blank"
-             rel="noopener noreferrer"
-             style="
-                display:inline-block;
-                padding:7px 14px;
-                background:#CCA234;
-                color:white;
-                text-decoration:none;
-                border-radius:5px;
-                font-weight:600;
-                font-size:13px;">
-              Learn how to get involved
-          </a>
         </div>
       </div>
     `;
@@ -1583,21 +1589,29 @@ function refreshLGAStyles() {
   }).addTo(map);
 
   map.on("click", () => {
+    
+      if (window.innerWidth <= 600) {
+        map.closePopup();
+        return;
+      }
+    
       if (!selectedLGALayer) return;
     
       selectedLGALayer.setStyle(lgaStyle(selectedLGALayer.feature));
       selectedLGALayer = null;
     
       explorerState.selection.lga = null;
-    const summaryExport =
-      document.getElementById("summaryExport");
     
-    if (summaryExport) {
-      summaryExport.style.display = "none";
-    }
+      const summaryExport =
+        document.getElementById("summaryExport");
+    
+      if (summaryExport) {
+        summaryExport.style.display = "none";
+      }
+    
       renderExplorerSummary();
     
-      map.flyTo([-25.0, 134.0], window.innerWidth <= 600 ? 3 : 5, {
+      map.flyTo([-25.0, 134.0], 5, {
         duration: 0.8,
         easeLinearity: 0.25
       });
@@ -1656,7 +1670,7 @@ function refreshLGAStyles() {
     const jitterLon = (Math.random() - 0.5) * 0.0015;
 
     const marker = L.circleMarker([+r.lat + jitterLat, +r.lon + jitterLon], {
-      radius: 7,
+      radius: 8,
       color: markerColor,
       fillColor: markerColor,
       fillOpacity: 0.75,
@@ -2535,6 +2549,11 @@ function exportLGASummary() {
   addSectionHeading("Community profile");
 
   addKeyValue(
+    "Population",
+    Number(profile.population).toLocaleString("en-AU")
+  );
+
+  addKeyValue(
     "Born overseas",
     profile.overseas_born_pct
       ? `${profile.overseas_born_pct}%`
@@ -2717,60 +2736,55 @@ function setExplorerLGA(rawName, layer) {
           <h4>${lga.name}</h4>
   
           ${
-            isWelcoming
-              ? `
-                <div class="summaryRow">
-                  <span>Welcoming Cities</span>
-                  <strong>Yes</strong>
-                </div>
-              `
-              : `
-                <div class="summaryRow">
-                  <span>Welcoming Cities</span>
-                  <strong>No</strong>
-                </div>
-              `
-          }
-  
+  hasAnyInitiative
+    ? `
+      <div class="summaryRow totalRow">
+        <span>Welcoming initiatives</span>
+        <strong>
           ${
-            accreditation
-              ? `
-                <div class="summaryRow subSubRow">
-                  <span>Accreditation</span>
-                  <strong>${accreditation}</strong>
-                </div>
-              `
-              : ""
+            initiativeRows.reduce((sum, row) => sum + row[1], 0) +
+            (isWelcoming ? 1 : 0) +
+            (isPalm ? 1 : 0)
           }
-  
-          ${
-            isPalm
-              ? `
-                <div class="summaryRow">
-                  <span>PALM Alliance</span>
-                  <strong>Yes</strong>
-                </div>
-              `
-              : ""
-          }
-  
-          ${
-            initiativeRows.length
-              ? `
-                <div class="summaryRow totalRow">
-                  <span>Welcoming initiatives</span>
-                  <strong>${initiativeRows.reduce((sum, row) => sum + row[1], 0)}</strong>
-                </div>
-  
-                ${initiativeRows.map(row => `
-                  <div class="summaryRow subRow">
-                    <span>${row[0]}</span>
-                    <strong>${row[1]}</strong>
-                  </div>
-                `).join("")}
-              `
-              : ""
-          }
+        </strong>
+      </div>
+    `
+    : ""
+}
+
+<div class="summaryRow subRow">
+  <span>Welcoming Cities</span>
+  <strong>${isWelcoming ? "Yes" : "No"}</strong>
+</div>
+
+${
+  accreditation
+    ? `
+      <div class="summaryRow subSubRow">
+        <span>Accreditation</span>
+        <strong>${accreditation}</strong>
+      </div>
+    `
+    : ""
+}
+
+${
+  isPalm
+    ? `
+      <div class="summaryRow subRow">
+        <span>PALM Alliance</span>
+        <strong>Yes</strong>
+      </div>
+    `
+    : ""
+}
+
+${initiativeRows.map(row => `
+  <div class="summaryRow subRow">
+    <span>${row[0]}</span>
+    <strong>${row[1]}</strong>
+  </div>
+`).join("")}
   
           ${
             !hasAnyInitiative
@@ -2809,6 +2823,17 @@ function setExplorerLGA(rawName, layer) {
           <div class="summaryRow totalRow">
             <span>Community profile</span>
             <strong></strong>
+          </div>
+
+          <div class="summaryRow">
+            <span>Population</span>
+            <strong>
+              ${
+                profile.population
+                  ? Number(profile.population).toLocaleString("en-AU")
+                  : "Not available"
+              }
+            </strong>
           </div>
   
           <div class="summaryRow">
