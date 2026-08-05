@@ -1199,8 +1199,13 @@ let explorerState = {
     clubs: 0,
     communityOrganisations: 0,
     communityHubs: 0,
+  
+    accreditedUniversities: 0,
+    accreditedWorkplaces: 0,
+    accreditedClubs: 0,
+  
     total: 0
-  },
+},
   accreditation: {
     established: 0,
     advanced: 0,
@@ -2165,6 +2170,11 @@ function updateExplorerState() {
       clubs: 0,
       communityOrganisations: 0,
       communityHubs: 0,
+    
+      accreditedUniversities: 0,
+      accreditedWorkplaces: 0,
+      accreditedClubs: 0,
+    
       total: 0
     },
     accreditation: {
@@ -2212,6 +2222,11 @@ function updateExplorerState() {
     cop: new Set(),
     hub: new Set()
   };
+  const accreditedInitiativeIds = {
+    uni: new Set(),
+    workplace: new Set(),
+    club: new Set()
+  };
 
   initiativeMarkers.forEach(marker => {
     const markerState = marker.options.state;
@@ -2220,16 +2235,26 @@ function updateExplorerState() {
   
     const type = marker.options.type;
     const id = marker.options.institutionId || marker.options.title;
-  
+    
     if (initiativeIds[type]) {
       initiativeIds[type].add(id);
+    }
+    
+    const accreditationLevel =
+      marker.options.accreditationLevel?.trim();
+    
+    if (
+      accreditationLevel &&
+      accreditedInitiativeIds[type]
+    ) {
+      accreditedInitiativeIds[type].add(id);
     }
   
     explorerState.organisations.push({
       name: marker.options.title,
       type: marker.options.type,
       state: marker.options.state,
-      accreditation: marker.options.accreditation || ""
+      accreditation: marker.options.accreditationLevel || ""
     });
   });
   explorerState.initiatives.universities = initiativeIds.uni.size;
@@ -2237,6 +2262,15 @@ function updateExplorerState() {
   explorerState.initiatives.clubs = initiativeIds.club.size;
   explorerState.initiatives.communityOrganisations = initiativeIds.cop.size;
   explorerState.initiatives.communityHubs = initiativeIds.hub.size;
+
+  explorerState.initiatives.accreditedUniversities =
+    accreditedInitiativeIds.uni.size;
+  
+  explorerState.initiatives.accreditedWorkplaces =
+    accreditedInitiativeIds.workplace.size;
+  
+  explorerState.initiatives.accreditedClubs =
+    accreditedInitiativeIds.club.size;
   
   const cityOrPalmLgas = new Set();
 
@@ -2884,16 +2918,49 @@ ${initiativeRows.map(row => `
           <span>Welcoming Universities</span>
           <strong>${explorerState.initiatives.universities}</strong>
         </div>
-  
+        
+        ${
+          explorerState.initiatives.accreditedUniversities > 0
+            ? `
+              <div class="summaryRow subSubRow">
+                <span>Accredited</span>
+                <strong>${explorerState.initiatives.accreditedUniversities}</strong>
+              </div>
+            `
+            : ""
+        }
+        
         <div class="summaryRow subRow">
           <span>Welcoming Workplaces</span>
           <strong>${explorerState.initiatives.workplaces}</strong>
         </div>
-  
+        
+        ${
+          explorerState.initiatives.accreditedWorkplaces > 0
+            ? `
+              <div class="summaryRow subSubRow">
+                <span>Accredited</span>
+                <strong>${explorerState.initiatives.accreditedWorkplaces}</strong>
+              </div>
+            `
+            : ""
+        }
+        
         <div class="summaryRow subRow">
           <span>Welcoming Clubs</span>
           <strong>${explorerState.initiatives.clubs}</strong>
         </div>
+        
+        ${
+          explorerState.initiatives.accreditedClubs > 0
+            ? `
+              <div class="summaryRow subSubRow">
+                <span>Accredited</span>
+                <strong>${explorerState.initiatives.accreditedClubs}</strong>
+              </div>
+            `
+            : ""
+        }
   
         <div class="summaryRow subRow">
           <span>Community Organisations</span>
